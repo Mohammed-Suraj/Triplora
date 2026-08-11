@@ -1,0 +1,776 @@
+{
+  "vagamon": {
+    "image": "/images/vagamon-cover.jpg",
+    "gallery": [
+      "/images/vagamon-cover.jpg",
+      "/images/vagamon-gallery-1.jpg",
+      "/images/vagamon-gallery-2.jpg",
+      "/images/vagamon-gallery-3.jpg",
+      "/images/vagamon-gallery-4.jpg",
+      "/images/vagamon-gallery-5.jpg",
+      "/images/vagamon-gallery-6.jpg"
+    ]
+  },
+  "ponmudi": {
+    "image": "/images/ponmudi-cover.jpg",
+    "gallery": [
+      "/images/ponmudi-cover.jpg",
+      "/images/ponmudi-gallery-1.jpg",
+      "/images/ponmudi-gallery-2.jpg",
+      "/images/ponmudi-gallery-3.jpg",
+      "/images/ponmudi-gallery-4.jpg",
+      "/images/ponmudi-gallery-5.jpg",
+      "/images/ponmudi-gallery-6.jpg"
+    ]
+  },
+  "nelliyampathy": {
+    "image": "/images/nelliyampathy-cover.jpg",
+    "gallery": [
+      "/images/nelliyampathy-cover.jpg",
+      "/images/nelliyampathy-gallery-1.jpg",
+      "/images/nelliyampathy-gallery-2.jpg",
+      "/images/nelliyampathy-gallery-3.jpg",
+      "/images/nelliyampathy-gallery-4.jpg",
+      "/images/nelliyampathy-gallery-5.jpg",
+      "/images/nelliyampathy-gallery-6.jpg"
+    ]
+  },
+  "cherai": {
+    "image": "/images/cherai-cover.jpg",
+    "gallery": [
+      "/images/cherai-cover.jpg",
+      "/images/cherai-gallery-1.jpg",
+      "/images/cherai-gallery-2.jpg",
+      "/images/cherai-gallery-3.jpg",
+      "/images/cherai-gallery-4.jpg",
+      "/images/cherai-gallery-5.jpg",
+      "/images/cherai-gallery-6.jpg"
+    ]
+  },
+  "muzhappilangad": {
+    "image": "/images/muzhappilangad-cover.jpg",
+    "gallery": [
+      "/images/muzhappilangad-cover.jpg",
+      "/images/muzhappilangad-gallery-1.jpg",
+      "/images/muzhappilangad-gallery-2.jpg",
+      "/images/muzhappilangad-gallery-3.jpg",
+      "/images/muzhappilangad-gallery-4.jpg",
+      "/images/muzhappilangad-gallery-5.jpg",
+      "/images/muzhappilangad-gallery-6.jpg"
+    ]
+  },
+  "payyambalam": {
+    "image": "/images/payyambalam-cover.jpg",
+    "gallery": [
+      "/images/payyambalam-cover.jpg",
+      "/images/payyambalam-gallery-1.jpg",
+      "/images/payyambalam-gallery-2.jpg",
+      "/images/payyambalam-gallery-3.jpg",
+      "/images/payyambalam-gallery-4.jpg",
+      "/images/payyambalam-gallery-5.jpg",
+      "/images/payyambalam-gallery-6.jpg"
+    ]
+  },
+  "kappad": {
+    "image": "/images/kappad-cover.jpg",
+    "gallery": [
+      "/images/kappad-cover.jpg",
+      "/images/kappad-gallery-1.jpg",
+      "/images/kappad-gallery-2.jpg",
+      "/images/kappad-gallery-3.jpg",
+      "/images/kappad-gallery-4.jpg",
+      "/images/kappad-gallery-5.jpg",
+      "/images/kappad-gallery-6.jpg"
+    ]
+  },
+  "shankumugham": {
+    "image": "/images/shankumugham-cover.jpg",
+    "gallery": [
+      "/images/shankumugham-cover.jpg",
+      "/images/shankumugham-gallery-1.jpg",
+      "/images/shankumugham-gallery-2.jpeg",
+      "/images/shankumugham-gallery-3.jpg",
+      "/images/shankumugham-gallery-4.jpg",
+      "/images/shankumugham-gallery-5.jpg",
+      "/images/shankumugham-gallery-6.jpg"
+    ]
+  },
+  "kolukkumalai": {
+    "image": "/images/kolukkumalai-cover.jpg",
+    "gallery": [
+      "/images/kolukkumalai-cover.jpg",
+      "/images/kolukkumalai-gallery-1.jpg",
+      "/images/kolukkumalai-gallery-2.jpg",
+      "/images/kolukkumalai-gallery-3.jpg",
+      "/images/kolukkumalai-gallery-4.jpg",
+      "/images/kolukkumalai-gallery-5.jpg",
+      "/images/kolukkumalai-gallery-6.jpg"
+    ]
+  },
+  "chinnakanal": {
+    "image": "/images/chinnakanal-cover.jpg",
+    "gallery": [
+      "/images/chinnakanal-cover.jpg",
+      "/images/chinnakanal-gallery-1.jpg",
+      "/images/chinnakanal-gallery-2.jpeg",
+      "/images/chinnakanal-gallery-3.jpg",
+      "/images/chinnakanal-gallery-4.jpg",
+      "/images/chinnakanal-gallery-5.jpg",
+      "/images/chinnakanal-gallery-6.jpg"
+    ]
+  },
+  "kumarakom": {
+    "image": "/images/kumarakom-cover.jpg",
+    "gallery": [
+      "/images/kumarakom-cover.jpg",
+      "/images/kumarakom-gallery-1.jpg",
+      "/images/kumarakom-gallery-2.jpg",
+      "/images/kumarakom-gallery-3.jpg",
+      "/images/kumarakom-gallery-4.jpg",
+      "/images/kumarakom-gallery-5.jpg",
+      "/images/kumarakom-gallery-6.jpg"
+    ]
+  },
+  "kuttanad": {
+    "image": "/images/kuttanad-cover.jpg",
+    "gallery": [
+      "/images/kuttanad-cover.jpg",
+      "/images/kuttanad-gallery-1.jpg",
+      "/images/kuttanad-gallery-2.jpg",
+      "/images/kuttanad-gallery-3.jpg",
+      "/images/kuttanad-gallery-4.jpg",
+      "/images/kuttanad-gallery-5.jpg",
+      "/images/kuttanad-gallery-6.jpg"
+    ]
+  },
+  "ashtamudi": {
+    "image": "/images/ashtamudi-cover.jpg",
+    "gallery": [
+      "/images/ashtamudi-cover.jpg",
+      "/images/ashtamudi-gallery-1.jpg",
+      "/images/ashtamudi-gallery-2.jpg",
+      "/images/ashtamudi-gallery-3.jpg",
+      "/images/ashtamudi-gallery-4.jpg",
+      "/images/ashtamudi-gallery-5.jpg",
+      "/images/ashtamudi-gallery-6.jpg"
+    ]
+  },
+  "valiyaparamba": {
+    "image": "/images/valiyaparamba-cover.jpg",
+    "gallery": [
+      "/images/valiyaparamba-cover.jpg",
+      "/images/valiyaparamba-gallery-1.jpg",
+      "/images/valiyaparamba-gallery-2.jpg",
+      "/images/valiyaparamba-gallery-3.jpg",
+      "/images/valiyaparamba-gallery-4.jpg",
+      "/images/valiyaparamba-gallery-5.jpg",
+      "/images/valiyaparamba-gallery-6.jpg"
+    ]
+  },
+  "kuruvadweep": {
+    "image": "/images/kuruvadweep-cover.jpg",
+    "gallery": [
+      "/images/kuruvadweep-cover.jpg",
+      "/images/kuruvadweep-gallery-1.jpg",
+      "/images/kuruvadweep-gallery-2.jpg",
+      "/images/kuruvadweep-gallery-3.jpg",
+      "/images/kuruvadweep-gallery-4.jpg",
+      "/images/kuruvadweep-gallery-5.jpg",
+      "/images/kuruvadweep-gallery-6.jpg"
+    ]
+  },
+  "st-angelo-fort": {
+    "image": "/images/st-angelo-fort-cover.jpg",
+    "gallery": [
+      "/images/st-angelo-fort-cover.jpg",
+      "/images/st-angelo-fort-gallery-1.jpg",
+      "/images/st-angelo-fort-gallery-2.jpg",
+      "/images/st-angelo-fort-gallery-3.jpg",
+      "/images/st-angelo-fort-gallery-4.jpg",
+      "/images/st-angelo-fort-gallery-5.jpg",
+      "/images/st-angelo-fort-gallery-6.jpg"
+    ]
+  },
+  "sakthan-thampuran-palace": {
+    "image": "/images/sakthan-thampuran-palace-cover.jpg",
+    "gallery": [
+      "/images/sakthan-thampuran-palace-cover.jpg",
+      "/images/sakthan-thampuran-palace-gallery-1.jpg",
+      "/images/sakthan-thampuran-palace-gallery-2.jpg",
+      "/images/sakthan-thampuran-palace-gallery-3.jpg",
+      "/images/sakthan-thampuran-palace-gallery-4.jpg",
+      "/images/sakthan-thampuran-palace-gallery-5.jpg",
+      "/images/sakthan-thampuran-palace-gallery-6.jpg"
+    ]
+  },
+  "hill-palace": {
+    "image": "/images/hill-palace-cover.jpg",
+    "gallery": [
+      "/images/hill-palace-cover.jpg",
+      "/images/hill-palace-gallery-1.jpg",
+      "/images/hill-palace-gallery-2.jpg",
+      "/images/hill-palace-gallery-3.jpg",
+      "/images/hill-palace-gallery-4.jpg",
+      "/images/hill-palace-gallery-5.jpg",
+      "/images/hill-palace-gallery-6.jpg"
+    ]
+  },
+  "guruvayur": {
+    "image": "/images/guruvayur-cover.jpg",
+    "gallery": [
+      "/images/guruvayur-cover.jpg",
+      "/images/guruvayur-gallery-1.jpg",
+      "/images/guruvayur-gallery-2.jpg",
+      "/images/guruvayur-gallery-3.jpg",
+      "/images/guruvayur-gallery-4.jpg",
+      "/images/guruvayur-gallery-5.jpg",
+      "/images/guruvayur-gallery-6.jpg"
+    ]
+  },
+  "padmanabhaswamy": {
+    "image": "/images/padmanabhaswamy-cover.jpg",
+    "gallery": [
+      "/images/padmanabhaswamy-cover.jpg",
+      "/images/padmanabhaswamy-gallery-1.jpg",
+      "/images/padmanabhaswamy-gallery-2.jpg",
+      "/images/padmanabhaswamy-gallery-3.jpg",
+      "/images/padmanabhaswamy-gallery-4.jpg",
+      "/images/padmanabhaswamy-gallery-5.jpg",
+      "/images/padmanabhaswamy-gallery-6.jpg"
+    ]
+  },
+  "sabarimala": {
+    "image": "/images/sabarimala-cover.jpg",
+    "gallery": [
+      "/images/sabarimala-cover.jpg",
+      "/images/sabarimala-gallery-1.jpg",
+      "/images/sabarimala-gallery-2.jpg",
+      "/images/sabarimala-gallery-3.jpg",
+      "/images/sabarimala-gallery-4.jpg",
+      "/images/sabarimala-gallery-5.jpg",
+      "/images/sabarimala-gallery-6.jpg"
+    ]
+  },
+  "silent-valley": {
+    "image": "/images/silent-valley-cover.jpg",
+    "gallery": [
+      "/images/silent-valley-cover.jpg",
+      "/images/silent-valley-gallery-1.jpg",
+      "/images/silent-valley-gallery-2.jpg",
+      "/images/silent-valley-gallery-3.jpg",
+      "/images/silent-valley-gallery-4.jpg",
+      "/images/silent-valley-gallery-5.jpg",
+      "/images/silent-valley-gallery-6.jpg"
+    ]
+  },
+  "parambikulam": {
+    "image": "/images/parambikulam-cover.jpg",
+    "gallery": [
+      "/images/parambikulam-cover.jpg",
+      "/images/parambikulam-gallery-1.jpg",
+      "/images/parambikulam-gallery-2.jpg",
+      "/images/parambikulam-gallery-3.jpg",
+      "/images/parambikulam-gallery-4.jpg",
+      "/images/parambikulam-gallery-5.jpg",
+      "/images/parambikulam-gallery-6.jpg"
+    ]
+  },
+  "thattekad": {
+    "image": "/images/thattekad-cover.jpg",
+    "gallery": [
+      "/images/thattekad-cover.jpg",
+      "/images/thattekad-gallery-1.jpg",
+      "/images/thattekad-gallery-2.jpg",
+      "/images/thattekad-gallery-3.jpg",
+      "/images/thattekad-gallery-4.jpg",
+      "/images/thattekad-gallery-5.jpg",
+      "/images/thattekad-gallery-6.jpg"
+    ]
+  },
+  "aralam": {
+    "image": "/images/aralam-cover.jpg",
+    "gallery": [
+      "/images/aralam-cover.jpg",
+      "/images/aralam-gallery-1.jpg",
+      "/images/aralam-gallery-2.jpg",
+      "/images/aralam-gallery-3.jpg",
+      "/images/aralam-gallery-4.jpg",
+      "/images/aralam-gallery-5.jpg",
+      "/images/aralam-gallery-6.jpg"
+    ]
+  },
+  "chinnar": {
+    "image": "/images/chinnar-cover.jpg",
+    "gallery": [
+      "/images/chinnar-cover.jpg",
+      "/images/chinnar-gallery-1.jpg",
+      "/images/chinnar-gallery-2.jpg",
+      "/images/chinnar-gallery-3.jpg",
+      "/images/chinnar-gallery-4.jpg",
+      "/images/chinnar-gallery-5.jpg",
+      "/images/chinnar-gallery-6.jpg"
+    ]
+  },
+  "meenmutty": {
+    "image": "/images/meenmutty-cover.jpg",
+    "gallery": [
+      "/images/meenmutty-cover.jpg",
+      "/images/meenmutty-gallery-1.jpg",
+      "/images/meenmutty-gallery-2.jpg",
+      "/images/meenmutty-gallery-3.jpg",
+      "/images/meenmutty-gallery-4.jpg",
+      "/images/meenmutty-gallery-5.jpg",
+      "/images/meenmutty-gallery-6.jpg"
+    ]
+  },
+  "palaruvi": {
+    "image": "/images/palaruvi-cover.jpg",
+    "gallery": [
+      "/images/palaruvi-cover.jpg",
+      "/images/palaruvi-gallery-1.jpg",
+      "/images/palaruvi-gallery-2.jpg",
+      "/images/palaruvi-gallery-3.jpg",
+      "/images/palaruvi-gallery-4.jpg",
+      "/images/palaruvi-gallery-5.jpg",
+      "/images/palaruvi-gallery-6.jpg"
+    ]
+  },
+  "thusharagiri": {
+    "image": "/images/thusharagiri-cover.jpg",
+    "gallery": [
+      "/images/thusharagiri-cover.jpg",
+      "/images/thusharagiri-gallery-1.jpg",
+      "/images/thusharagiri-gallery-2.jpg",
+      "/images/thusharagiri-gallery-3.jpg",
+      "/images/thusharagiri-gallery-4.jpg",
+      "/images/thusharagiri-gallery-5.jpg",
+      "/images/thusharagiri-gallery-6.jpg"
+    ]
+  },
+  "chembra": {
+    "image": "/images/chembra-cover.jpg",
+    "gallery": [
+      "/images/chembra-cover.jpg",
+      "/images/chembra-gallery-1.jpg",
+      "/images/chembra-gallery-2.jpg",
+      "/images/chembra-gallery-3.jpg",
+      "/images/chembra-gallery-4.jpg",
+      "/images/chembra-gallery-5.jpg",
+      "/images/chembra-gallery-6.jpg"
+    ]
+  },
+  "idukki-dam": {
+    "image": "/images/idukki-dam-cover.jpg",
+    "gallery": [
+      "/images/idukki-dam-cover.jpg",
+      "/images/idukki-dam-gallery-1.jpg",
+      "/images/idukki-dam-gallery-2.jpg",
+      "/images/idukki-dam-gallery-3.jpg",
+      "/images/idukki-dam-gallery-4.jpg",
+      "/images/idukki-dam-gallery-5.jpg",
+      "/images/idukki-dam-gallery-6.jpg"
+    ]
+  },
+  "banasura": {
+    "image": "/images/banasura-cover.jpg",
+    "gallery": [
+      "/images/banasura-cover.jpg",
+      "/images/banasura-gallery-1.jpg",
+      "/images/banasura-gallery-2.jpg",
+      "/images/banasura-gallery-3.jpg",
+      "/images/banasura-gallery-4.jpg",
+      "/images/banasura-gallery-5.jpg",
+      "/images/banasura-gallery-6.jpg"
+    ]
+  },
+  "thenmala": {
+    "image": "/images/thenmala-cover.jpeg",
+    "gallery": [
+      "/images/thenmala-cover.jpeg",
+      "/images/thenmala-gallery-1.jpg",
+      "/images/thenmala-gallery-2.jpeg",
+      "/images/thenmala-gallery-3.jpg",
+      "/images/thenmala-gallery-4.jpg",
+      "/images/thenmala-gallery-5.jpg",
+      "/images/thenmala-gallery-6.jpg"
+    ]
+  },
+  "pookode": {
+    "image": "/images/pookode-cover.jpg",
+    "gallery": [
+      "/images/pookode-cover.jpg",
+      "/images/pookode-gallery-1.jpg",
+      "/images/pookode-gallery-2.jpg",
+      "/images/pookode-gallery-3.jpg",
+      "/images/pookode-gallery-4.jpg",
+      "/images/pookode-gallery-5.jpg",
+      "/images/pookode-gallery-6.jpg"
+    ]
+  },
+  "munroe-island": {
+    "image": "/images/munroe-island-cover.jpg",
+    "gallery": [
+      "/images/munroe-island-cover.jpg",
+      "/images/munroe-island-gallery-1.jpg",
+      "/images/munroe-island-gallery-2.jpg",
+      "/images/munroe-island-gallery-3.jpg",
+      "/images/munroe-island-gallery-4.jpg",
+      "/images/munroe-island-gallery-5.jpg",
+      "/images/munroe-island-gallery-6.jpg"
+    ]
+  },
+  "krishnapuram-palace": {
+    "image": "/images/krishnapuram-palace-cover.jpeg",
+    "gallery": [
+      "/images/krishnapuram-palace-cover.jpeg",
+      "/images/krishnapuram-palace-gallery-1.jpg",
+      "/images/krishnapuram-palace-gallery-2.jpeg",
+      "/images/krishnapuram-palace-gallery-3.jpeg",
+      "/images/krishnapuram-palace-gallery-4.jpg",
+      "/images/krishnapuram-palace-gallery-5.jpg",
+      "/images/krishnapuram-palace-gallery-6.jpg"
+    ]
+  },
+  "edakkal-caves": {
+    "image": "/images/edakkal-caves-cover.jpg",
+    "gallery": [
+      "/images/edakkal-caves-cover.jpg",
+      "/images/edakkal-caves-gallery-1.jpg",
+      "/images/edakkal-caves-gallery-2.jpg",
+      "/images/edakkal-caves-gallery-3.jpg",
+      "/images/edakkal-caves-gallery-4.jpg",
+      "/images/edakkal-caves-gallery-5.jpg",
+      "/images/edakkal-caves-gallery-6.jpg"
+    ]
+  },
+  "soochipara": {
+    "image": "/images/soochipara-cover.jpg",
+    "gallery": [
+      "/images/soochipara-cover.jpg",
+      "/images/soochipara-gallery-1.jpg",
+      "/images/soochipara-gallery-2.jpg",
+      "/images/soochipara-gallery-3.jpg",
+      "/images/soochipara-gallery-4.jpg",
+      "/images/soochipara-gallery-5.jpg",
+      "/images/soochipara-gallery-6.jpg"
+    ]
+  },
+  "cheeyappara": {
+    "image": "/images/cheeyappara-cover.jpg",
+    "gallery": [
+      "/images/cheeyappara-cover.jpg",
+      "/images/cheeyappara-gallery-1.jpg",
+      "/images/cheeyappara-gallery-2.jpg",
+      "/images/cheeyappara-gallery-3.jpg",
+      "/images/cheeyappara-gallery-4.jpg",
+      "/images/cheeyappara-gallery-5.jpg",
+      "/images/cheeyappara-gallery-6.jpg"
+    ]
+  },
+  "chottanikkara": {
+    "image": "/images/chottanikkara-cover.jpg",
+    "gallery": [
+      "/images/chottanikkara-cover.jpg",
+      "/images/chottanikkara-gallery-1.jpg",
+      "/images/chottanikkara-gallery-2.jpg",
+      "/images/chottanikkara-gallery-3.jpg",
+      "/images/chottanikkara-gallery-4.jpg",
+      "/images/chottanikkara-gallery-5.jpg",
+      "/images/chottanikkara-gallery-6.jpg"
+    ]
+  },
+  "valara": {
+    "image": "/images/valara-cover.jpg",
+    "gallery": [
+      "/images/valara-cover.jpg",
+      "/images/valara-gallery-1.jpg",
+      "/images/valara-gallery-2.jpg",
+      "/images/valara-gallery-3.jpg",
+      "/images/valara-gallery-4.jpg",
+      "/images/valara-gallery-5.jpg",
+      "/images/valara-gallery-6.jpg"
+    ]
+  },
+  "napier-museum": {
+    "image": "/images/napier-museum-cover.jpg",
+    "gallery": [
+      "/images/napier-museum-cover.jpg",
+      "/images/napier-museum-gallery-1.jpg",
+      "/images/napier-museum-gallery-2.jpg",
+      "/images/napier-museum-gallery-3.jpg",
+      "/images/napier-museum-gallery-4.jpg",
+      "/images/napier-museum-gallery-5.jpg",
+      "/images/napier-museum-gallery-6.jpg"
+    ]
+  },
+  "poovar-island": {
+    "image": "/images/poovar-island-cover.jpg",
+    "gallery": [
+      "/images/poovar-island-cover.jpg",
+      "/images/poovar-island-gallery-1.jpg",
+      "/images/poovar-island-gallery-2.jpg",
+      "/images/poovar-island-gallery-3.jpg",
+      "/images/poovar-island-gallery-4.jpg",
+      "/images/poovar-island-gallery-5.jpg",
+      "/images/poovar-island-gallery-6.jpg"
+    ]
+  },
+  "gavi": {
+    "image": "/images/gavi-cover.jpg",
+    "gallery": [
+      "/images/gavi-cover.jpg",
+      "/images/gavi-gallery-1.jpg",
+      "/images/gavi-gallery-2.jpg",
+      "/images/gavi-gallery-3.jpg",
+      "/images/gavi-gallery-4.jpg",
+      "/images/gavi-gallery-5.jpg",
+      "/images/gavi-gallery-6.jpg"
+    ]
+  },
+  "marari": {
+    "image": "/images/marari-cover.jpg",
+    "gallery": [
+      "/images/marari-cover.jpg",
+      "/images/marari-gallery-1.jpg",
+      "/images/marari-gallery-2.jpg",
+      "/images/marari-gallery-3.jpg",
+      "/images/marari-gallery-4.jpg",
+      "/images/marari-gallery-5.jpg",
+      "/images/marari-gallery-6.jpg"
+    ]
+  },
+  "eravikulam": {
+    "image": "/images/eravikulam-cover.jpg",
+    "gallery": [
+      "/images/eravikulam-cover.jpg",
+      "/images/eravikulam-gallery-1.jpg",
+      "/images/eravikulam-gallery-2.jpg",
+      "/images/eravikulam-gallery-3.jpg",
+      "/images/eravikulam-gallery-4.jpg",
+      "/images/eravikulam-gallery-5.jpg",
+      "/images/eravikulam-gallery-6.jpg"
+    ]
+  },
+  "mattupetty-dam": {
+    "image": "/images/mattupetty-dam-cover.jpg",
+    "gallery": [
+      "/images/mattupetty-dam-cover.jpg",
+      "/images/mattupetty-dam-gallery-1.jpg",
+      "/images/mattupetty-dam-gallery-2.jpg",
+      "/images/mattupetty-dam-gallery-3.jpg",
+      "/images/mattupetty-dam-gallery-4.jpg",
+      "/images/mattupetty-dam-gallery-5.jpg",
+      "/images/mattupetty-dam-gallery-6.jpg"
+    ]
+  },
+  "anamudi": {
+    "image": "/images/anamudi-cover.jpg",
+    "gallery": [
+      "/images/anamudi-cover.jpg",
+      "/images/anamudi-gallery-1.jpg",
+      "/images/anamudi-gallery-2.jpg",
+      "/images/anamudi-gallery-3.jpg",
+      "/images/anamudi-gallery-4.jpg",
+      "/images/anamudi-gallery-5.jpg",
+      "/images/anamudi-gallery-6.jpg"
+    ]
+  },
+  "marine-drive": {
+    "image": "/images/marine-drive-cover.jpg",
+    "gallery": [
+      "/images/marine-drive-cover.jpg",
+      "/images/marine-drive-gallery-1.jpg",
+      "/images/marine-drive-gallery-2.jpg",
+      "/images/marine-drive-gallery-3.jpg",
+      "/images/marine-drive-gallery-4.jpg",
+      "/images/marine-drive-gallery-5.jpg",
+      "/images/marine-drive-gallery-6.jpg"
+    ]
+  },
+  "vazhachal": {
+    "image": "/images/vazhachal-cover.jpg",
+    "gallery": [
+      "/images/vazhachal-cover.jpg",
+      "/images/vazhachal-gallery-1.jpg",
+      "/images/vazhachal-gallery-2.jpg",
+      "/images/vazhachal-gallery-3.jpg",
+      "/images/vazhachal-gallery-4.jpg",
+      "/images/vazhachal-gallery-5.jpg",
+      "/images/vazhachal-gallery-6.jpg"
+    ]
+  },
+  "thrissur-zoo": {
+    "image": "/images/thrissur-zoo-cover.jpg",
+    "gallery": [
+      "/images/thrissur-zoo-cover.jpg",
+      "/images/thrissur-zoo-gallery-1.jpg",
+      "/images/thrissur-zoo-gallery-2.jpg",
+      "/images/thrissur-zoo-gallery-3.jpg",
+      "/images/thrissur-zoo-gallery-4.jpg",
+      "/images/thrissur-zoo-gallery-5.jpg",
+      "/images/thrissur-zoo-gallery-6.jpg"
+    ]
+  },
+  "vadakkumnathan": {
+    "image": "/images/vadakkumnathan-cover.jpg",
+    "gallery": [
+      "/images/vadakkumnathan-cover.jpg",
+      "/images/vadakkumnathan-gallery-1.jpg",
+      "/images/vadakkumnathan-gallery-2.jpg",
+      "/images/vadakkumnathan-gallery-3.jpg",
+      "/images/vadakkumnathan-gallery-4.jpg",
+      "/images/vadakkumnathan-gallery-5.jpg",
+      "/images/vadakkumnathan-gallery-6.jpg"
+    ]
+  },
+  "snehatheeram": {
+    "image": "/images/snehatheeram-cover.jpg",
+    "gallery": [
+      "/images/snehatheeram-cover.jpg",
+      "/images/snehatheeram-gallery-1.jpg",
+      "/images/snehatheeram-gallery-2.jpg",
+      "/images/snehatheeram-gallery-3.jpg",
+      "/images/snehatheeram-gallery-4.jpg",
+      "/images/snehatheeram-gallery-5.jpg",
+      "/images/snehatheeram-gallery-6.jpg"
+    ]
+  },
+  "chavakkad": {
+    "image": "/images/chavakkad-cover.jpg",
+    "gallery": [
+      "/images/chavakkad-cover.jpg",
+      "/images/chavakkad-gallery-1.jpg",
+      "/images/chavakkad-gallery-2.jpg",
+      "/images/chavakkad-gallery-3.jpg",
+      "/images/chavakkad-gallery-4.jpg",
+      "/images/chavakkad-gallery-5.jpg",
+      "/images/chavakkad-gallery-6.jpg"
+    ]
+  },
+  "cheraman-masjid": {
+    "image": "/images/cheraman-masjid-cover.jpg",
+    "gallery": [
+      "/images/cheraman-masjid-cover.jpg",
+      "/images/cheraman-masjid-gallery-1.jpg",
+      "/images/cheraman-masjid-gallery-2.jpg",
+      "/images/cheraman-masjid-gallery-3.jpg",
+      "/images/cheraman-masjid-gallery-4.jpg",
+      "/images/cheraman-masjid-gallery-5.jpg",
+      "/images/cheraman-masjid-gallery-6.jpg"
+    ]
+  },
+  "malampuzha-dam": {
+    "image": "/images/malampuzha-dam-cover.jpg",
+    "gallery": [
+      "/images/malampuzha-dam-cover.jpg",
+      "/images/malampuzha-dam-gallery-1.jpg",
+      "/images/malampuzha-dam-gallery-2.jpg",
+      "/images/malampuzha-dam-gallery-3.jpg",
+      "/images/malampuzha-dam-gallery-4.jpg",
+      "/images/malampuzha-dam-gallery-5.jpg",
+      "/images/malampuzha-dam-gallery-6.jpg"
+    ]
+  },
+  "kottakkunnu": {
+    "image": "/images/kottakkunnu-cover.jpg",
+    "gallery": [
+      "/images/kottakkunnu-cover.jpg",
+      "/images/kottakkunnu-gallery-1.jpg",
+      "/images/kottakkunnu-gallery-2.jpg",
+      "/images/kottakkunnu-gallery-3.jpg",
+      "/images/kottakkunnu-gallery-4.jpg",
+      "/images/kottakkunnu-gallery-5.jpg",
+      "/images/kottakkunnu-gallery-6.jpg"
+    ]
+  },
+  "nilambur-teak-museum": {
+    "image": "/images/nilambur-teak-museum-cover.jpg",
+    "gallery": [
+      "/images/nilambur-teak-museum-cover.jpg",
+      "/images/nilambur-teak-museum-gallery-1.jpg",
+      "/images/nilambur-teak-museum-gallery-2.jpg",
+      "/images/nilambur-teak-museum-gallery-3.jpg",
+      "/images/nilambur-teak-museum-gallery-4.jpg",
+      "/images/nilambur-teak-museum-gallery-5.jpg",
+      "/images/nilambur-teak-museum-gallery-6.jpg"
+    ]
+  },
+  "kozhikode-beach": {
+    "image": "/images/kozhikode-beach-cover.jpg",
+    "gallery": [
+      "/images/kozhikode-beach-cover.jpg",
+      "/images/kozhikode-beach-gallery-1.jpg",
+      "/images/kozhikode-beach-gallery-2.jpg",
+      "/images/kozhikode-beach-gallery-3.jpg",
+      "/images/kozhikode-beach-gallery-4.jpg",
+      "/images/kozhikode-beach-gallery-5.jpg",
+      "/images/kozhikode-beach-gallery-6.jpg"
+    ]
+  },
+  "beypore": {
+    "image": "/images/beypore-cover.jpg",
+    "gallery": [
+      "/images/beypore-cover.jpg",
+      "/images/beypore-gallery-1.jpg",
+      "/images/beypore-gallery-2.jpg",
+      "/images/beypore-gallery-3.jpg",
+      "/images/beypore-gallery-4.jpg",
+      "/images/beypore-gallery-5.jpg",
+      "/images/beypore-gallery-6.jpg"
+    ]
+  },
+  "ranipuram": {
+    "image": "/images/ranipuram-cover.jpg",
+    "gallery": [
+      "/images/ranipuram-cover.jpg",
+      "/images/ranipuram-gallery-1.jpg",
+      "/images/ranipuram-gallery-2.jpg",
+      "/images/ranipuram-gallery-3.jpg",
+      "/images/ranipuram-gallery-4.jpg",
+      "/images/ranipuram-gallery-5.jpg",
+      "/images/ranipuram-gallery-6.jpg"
+    ]
+  },
+  "santa-cruz-basilica": {
+    "image": "/images/santa-cruz-basilica-cover.jpg",
+    "gallery": [
+      "/images/santa-cruz-basilica-cover.jpg",
+      "/images/santa-cruz-basilica-gallery-1.jpg",
+      "/images/santa-cruz-basilica-gallery-2.jpg",
+      "/images/santa-cruz-basilica-gallery-3.jpg",
+      "/images/santa-cruz-basilica-gallery-4.jpg",
+      "/images/santa-cruz-basilica-gallery-5.jpg",
+      "/images/santa-cruz-basilica-gallery-6.jpg"
+    ]
+  },
+  "jatayu-earth-center": {
+    "image": "/images/jatayu-earth-center-cover.jpg",
+    "gallery": [
+      "/images/jatayu-earth-center-cover.jpg",
+      "/images/jatayu-earth-center-gallery-1.jpg",
+      "/images/jatayu-earth-center-gallery-2.jpg",
+      "/images/jatayu-earth-center-gallery-3.jpg",
+      "/images/jatayu-earth-center-gallery-4.jpg",
+      "/images/jatayu-earth-center-gallery-5.jpg",
+      "/images/jatayu-earth-center-gallery-6.jpg"
+    ]
+  },
+  "ilaveezhapoonchira": {
+    "image": "/images/ilaveezhapoonchira-cover.jpg",
+    "gallery": [
+      "/images/ilaveezhapoonchira-cover.jpg"
+    ]
+  },
+  "top-station": {
+    "image": "/images/top-station-cover.jpg",
+    "gallery": [
+      "/images/top-station-cover.jpg",
+      "/images/top-station-gallery-1.jpg",
+      "/images/top-station-gallery-2.jpg",
+      "/images/top-station-gallery-3.jpg",
+      "/images/top-station-gallery-4.jpg",
+      "/images/top-station-gallery-5.jpg",
+      "/images/top-station-gallery-6.jpg"
+    ]
+  }
+}

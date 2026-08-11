@@ -1,0 +1,406 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: 'Playfair Display', ui-serif, Georgia, serif;
+  --font-display: 'Fraunces', ui-serif, Georgia, serif;
+
+  --color-background: oklch(0.99 0.004 106);
+  --color-foreground: oklch(0.22 0.02 170);
+  --color-card: oklch(1 0 0);
+  --color-card-foreground: oklch(0.22 0.02 170);
+  --color-primary: oklch(0.45 0.09 170);
+  --color-primary-foreground: oklch(0.99 0.004 106);
+  --color-secondary: oklch(0.95 0.01 170);
+  --color-secondary-foreground: oklch(0.3 0.04 170);
+  --color-muted: oklch(0.955 0.006 106);
+  --color-muted-foreground: oklch(0.5 0.015 170);
+  --color-accent: oklch(0.75 0.13 75);
+  --color-accent-foreground: oklch(0.25 0.05 75);
+  --color-border: oklch(0.91 0.008 106);
+  --color-input: oklch(0.91 0.008 106);
+  --color-ring: oklch(0.45 0.09 170);
+
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-2xl: 2rem;
+}
+
+.dark {
+  --color-background: oklch(0.17 0.015 170);
+  --color-foreground: oklch(0.94 0.005 106);
+  --color-card: oklch(0.22 0.018 170);
+  --color-card-foreground: oklch(0.94 0.005 106);
+  --color-primary: oklch(0.72 0.11 168);
+  --color-primary-foreground: oklch(0.15 0.02 170);
+  --color-secondary: oklch(0.27 0.02 170);
+  --color-secondary-foreground: oklch(0.9 0.01 170);
+  --color-muted: oklch(0.25 0.018 170);
+  --color-muted-foreground: oklch(0.68 0.01 170);
+  --color-accent: oklch(0.8 0.13 80);
+  --color-accent-foreground: oklch(0.2 0.04 80);
+  --color-border: oklch(0.3 0.02 170);
+  --color-input: oklch(0.3 0.02 170);
+  --color-ring: oklch(0.72 0.11 168);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    background-color: var(--color-background);
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: color-mix(in oklch, var(--color-primary) 22%, transparent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: color-mix(in oklch, var(--color-muted-foreground) 30%, transparent);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: color-mix(in oklch, var(--color-muted-foreground) 50%, transparent);
+    background-clip: content-box;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer utilities {
+  .glass {
+    background-color: color-mix(in oklch, var(--color-card) 65%, transparent);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid color-mix(in oklch, var(--color-border) 60%, transparent);
+  }
+
+  .glass-strong {
+    background-color: color-mix(in oklch, var(--color-card) 85%, transparent);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid color-mix(in oklch, var(--color-border) 70%, transparent);
+  }
+
+  /* Entrance animations (respect prefers-reduced-motion via global rule) */
+  .animate-fade-in {
+    animation: triplora-fade-in 0.5s ease-out both;
+  }
+  .animate-fade-in-up {
+    animation: triplora-fade-in-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .animate-scale-in {
+    animation: triplora-scale-in 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  /* Shimmer skeleton (non-pulsing, premium sweep) */
+  .skeleton {
+    position: relative;
+    overflow: hidden;
+    background-color: color-mix(in oklch, var(--color-muted) 85%, transparent);
+  }
+  .skeleton::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in oklch, var(--color-card) 70%, transparent),
+      transparent
+    );
+    animation: triplora-shimmer 1.6s infinite;
+  }
+
+  /* Image fade-in once loaded */
+  .img-fade {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+  .img-fade.img-loaded {
+    opacity: 1;
+  }
+
+  /* Premium card hover: lift + soft shadow without layout shift */
+  .card-lift {
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+  .card-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px -8px color-mix(in oklch, black 18%, transparent);
+  }
+  .dark .card-lift:hover {
+    box-shadow: 0 12px 32px -8px rgb(0 0 0 / 0.6);
+  }
+
+  /* Subtle press-down for interactive elements */
+  .press {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .press:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+
+  /* Hide scrollbar but keep scrollability (chip rows) */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Text helpers */
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+
+  /* Line clamp fallback for older browsers */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+@keyframes triplora-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes triplora-fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes triplora-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes triplora-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes triplora-ripple {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* ---------- Leaflet map theming (OpenStreetMap) ---------- */
+
+.triplora-map-btn {
+  display: flex;
+  height: 2rem;
+  width: 2rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  color: var(--color-muted-foreground);
+  cursor: pointer;
+  transition: color 150ms ease, background-color 150ms ease;
+}
+.triplora-map-btn:hover {
+  color: var(--color-foreground);
+  background-color: var(--color-secondary);
+}
+.triplora-map-btn:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 1px;
+}
+
+.triplora-map-controls {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.triplora-pin,
+.triplora-user-dot,
+.triplora-route-dot {
+  background: transparent;
+  border: none;
+}
+
+.triplora-pin svg {
+  filter: drop-shadow(0 3px 4px rgb(0 0 0 / 0.35));
+  transition: transform 180ms ease;
+}
+.triplora-pin:hover svg {
+  transform: scale(1.08);
+}
+
+.triplora-user-dot svg {
+  animation: triplora-pulse 2s ease-in-out infinite;
+}
+
+@keyframes triplora-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.18);
+    opacity: 0.85;
+  }
+}
+
+.leaflet-container {
+  font-family: var(--font-sans);
+  background-color: var(--color-muted);
+}
+
+.leaflet-container .leaflet-control-attribution {
+  background-color: color-mix(in oklch, var(--color-card) 80%, transparent);
+  color: var(--color-muted-foreground);
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 6px 0 0 0;
+}
+.leaflet-container .leaflet-control-attribution a {
+  color: var(--color-primary);
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.25);
+  background-color: var(--color-card);
+  color: var(--color-card-foreground);
+}
+.leaflet-popup-content {
+  margin: 10px 14px;
+  line-height: 1.4;
+}
+.leaflet-popup-tip {
+  background-color: var(--color-card);
+}
+.leaflet-popup-close-button {
+  color: var(--color-muted-foreground) !important;
+}
+.leaflet-popup-close-button:hover {
+  color: var(--color-foreground) !important;
+}
+
+.triplora-popup {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 150px;
+  font-size: 13px;
+}
+.triplora-popup-title {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--color-foreground);
+  margin-bottom: 2px;
+}
+.triplora-popup-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-muted-foreground);
+  font-size: 12px;
+}
+.triplora-popup-icon {
+  width: 12px;
+  height: 12px;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.leaflet-control-zoom a,
+.leaflet-bar a {
+  color: var(--color-foreground) !important;
+}
+
+/* Touch friendly: keep map gestures smooth on mobile */
+@media (pointer: coarse) {
+  .triplora-map-btn {
+    height: 2.5rem;
+    width: 2.5rem;
+  }
+  .triplora-map-controls {
+    gap: 0.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .triplora-user-dot svg {
+    animation: none;
+  }
+}
