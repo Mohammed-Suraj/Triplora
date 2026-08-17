@@ -21,7 +21,7 @@ export function UsersPage() {
     setLoading(true)
     setError(null)
     adminApi
-      .users({ limit: 100 })
+      .users({ limit: 50 })
       .then((res) => setUsers(res.data))
       .catch((err) => setError(err instanceof Error ? err.message : 'Failed to load users'))
       .finally(() => setLoading(false))

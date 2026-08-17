@@ -30,7 +30,7 @@ export function DestinationsPage() {
     setLoading(true)
     setError(null)
     adminApi
-      .destinations({ limit: 100 })
+      .destinations({ limit: 50 })
       .then((res) => setDestinations(res.data))
       .catch((err) => setError(err instanceof Error ? err.message : 'Failed to load destinations'))
       .finally(() => setLoading(false))

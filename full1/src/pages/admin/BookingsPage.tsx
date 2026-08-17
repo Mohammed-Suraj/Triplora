@@ -49,7 +49,7 @@ export function BookingsPage() {
     setError(null)
     adminApi
       .bookings({
-        limit: 100,
+        limit: 50,
         ...(status ? { status } : {}),
         ...(paymentStatus ? { paymentStatus } : {}),
       })

@@ -16,6 +16,7 @@ import {
   LogOut,
   Menu,
   X,
+  BedDouble,
 } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import { useToast } from '@/context/ToastContext'
@@ -25,6 +26,8 @@ const navItems = [
   { to: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/admin/users', label: 'Users', icon: Users },
   { to: '/admin/destinations', label: 'Destinations', icon: MapPin },
+  { to: '/admin/hotels', label: 'Hotels', icon: BedDouble },
+  { to: '/admin/hotel-bookings', label: 'Hotel Bookings', icon: CalendarDays },
   { to: '/admin/bookings', label: 'Bookings', icon: CalendarDays },
   { to: '/admin/reviews', label: 'Reviews', icon: Star },
   { to: '/admin/review-reports', label: 'Review Reports', icon: Flag },

@@ -17,7 +17,7 @@ export function ReviewsPage() {
 
   const loadReviews = () => {
     adminApi
-      .reviews({ limit: 100 })
+      .reviews({ limit: 50 })
       .then((res) => setReviews(res.data))
       .catch((err) => setError(err instanceof Error ? err.message : 'Failed to load reviews'))
       .finally(() => setLoading(false))

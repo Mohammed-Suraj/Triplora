@@ -1,7 +1,8 @@
 import { jsPDF } from 'jspdf'
 import autoTable from 'jspdf-autotable'
 import QRCode from 'qrcode'
-import type { AiTripPlanResult } from '@/lib/api'
+import type { AiTripPlanResult, PlannerPackingItem, PlannerTrip } from '@/lib/api'
+import type { PlannerTripDay, PlannerTripItem } from '@/lib/api'
 
 const TEAL: [number, number, number] = [13, 148, 136]
 const DARK_TEAL: [number, number, number] = [10, 110, 100]
@@ -362,4 +363,229 @@ export async function generateTripPdf(plan: AiTripPlanResult, meta?: { title?: s
     .replace(/(^-|-$)/g, '')
     .slice(0, 60)
   doc.save(`triplora-${safeName || 'itinerary'}.pdf`)
+}
+
+// ---------------------------------------------------------------------------
+// Trip Planner 2.0 export
+// ---------------------------------------------------------------------------
+
+const TYPE_LABELS: Record<PlannerTripItem['type'], string> = {
+  HOTEL: 'Hotel',
+  RESTAURANT: 'Restaurant',
+  DESTINATION: 'Destination',
+  EXPERIENCE: 'Experience',
+}
+
+function itemValue(item: PlannerTripItem): string {
+  if (item.price <= 0) return 'See listing'
+  return `Rs. ${item.price.toLocaleString('en-IN')}`
+}
+
+export async function exportPlannerPdf(
+  trip: Pick<PlannerTrip, 'title' | 'startDate' | 'days' | 'packing'>,
+): Promise<void> {
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' })
+  const title = trip.title || 'My Kerala Trip'
+  const dayCount = trip.days.length
+  const itemCount = trip.days.reduce((sum, day) => sum + day.items.length, 0)
+  const totalBudget = trip.days.reduce(
+    (sum, day) => sum + day.items.reduce((daySum, item) => daySum + item.price, 0),
+    0,
+  )
+  const cities = [...new Set(trip.days.flatMap((day) => day.items.map((i) => i.city).filter(Boolean)))]
+
+  // -------------------------------------------------------------------------
+  // COVER
+  // -------------------------------------------------------------------------
+  doc.setFillColor(...TEAL)
+  doc.rect(0, 0, PAGE_W, 150, 'F')
+  doc.setFillColor(...DARK_TEAL)
+  doc.rect(0, 150, PAGE_W, 6, 'F')
+
+  doc.setFont('helvetica', 'bold')
+  doc.setFontSize(22)
+  doc.setTextColor(255, 255, 255)
+  doc.text(BRAND, MARGIN, 28)
+  doc.setFont('helvetica', 'normal')
+  doc.setFontSize(9)
+  doc.setTextColor(204, 251, 241)
+  doc.text(TAGLINE.toUpperCase(), MARGIN, 35)
+
+  doc.setFont('helvetica', 'bold')
+  doc.setFontSize(26)
+  doc.setTextColor(255, 255, 255)
+  const titleLines = doc.splitTextToSize(title, CONTENT_W) as string[]
+  doc.text(titleLines, MARGIN, 62)
+  const titleEnd = 62 + titleLines.length * 9
+
+  doc.setFont('helvetica', 'normal')
+  doc.setFontSize(11)
+  doc.setTextColor(240, 253, 250)
+  doc.text(`${dayCount} days · ${itemCount} stops · ${cities.slice(0, 4).join(' · ') || 'Kerala'}`, MARGIN, titleEnd + 6)
+  if (trip.startDate) {
+    doc.text(`Starts ${formatDate(new Date(trip.startDate))}`, MARGIN, titleEnd + 12)
+  }
+
+  try {
+    const qrUrl = `https://triplora.travel/planner`
+    const qrData = await QRCode.toDataURL(qrUrl, { width: 220, margin: 1, color: { dark: '#FFFFFF', light: '#0D9488' } })
+    doc.addImage(qrData, 'PNG', PAGE_W - MARGIN - 30, 24, 30, 30)
+    doc.setFontSize(6.5)
+    doc.setTextColor(204, 251, 241)
+    doc.text('Scan to explore', PAGE_W - MARGIN - 15, 58, { align: 'center' })
+  } catch {
+    // QR generation is optional
+  }
+
+  const imageUrls = trip.days
+    .flatMap((day) => day.items.slice(0, 1).map((item) => item.image))
+    .filter(Boolean)
+    .slice(0, 3)
+  const imgW = 42
+  const gap = 5
+  const stripY = 165
+  let imgX = MARGIN
+  for (const url of imageUrls) {
+    const dataUrl = await toDataUrl(url)
+    if (dataUrl) {
+      doc.addImage(dataUrl, 'PNG', imgX, stripY, imgW, 30)
+    } else {
+      doc.setFillColor(...LIGHT)
+      doc.rect(imgX, stripY, imgW, 30, 'F')
+    }
+    imgX += imgW + gap
+  }
+  const stripEnd = stripY + 36
+
+  let y = stripEnd + 8
+  y = sectionTitle(doc, 'Trip at a glance', y)
+  y += 2
+  const facts = [
+    `${dayCount} days of itinerary`,
+    `${itemCount} hand-picked stops`,
+    `Estimated budget Rs. ${totalBudget.toLocaleString('en-IN')}`,
+    `Packing checklist included`,
+    `Built and saved on Triplora`,
+  ]
+  doc.setFont('helvetica', 'normal')
+  doc.setFontSize(9.5)
+  doc.setTextColor(...MUTED)
+  facts.forEach((fact) => {
+    doc.setFillColor(...ACCENT)
+    doc.circle(MARGIN + 1.2, y + 1, 1.2, 'F')
+    doc.text(fact, MARGIN + 5, y + 2)
+    y += 6
+  })
+
+  y += 4
+  doc.setFont('helvetica', 'normal')
+  doc.setFontSize(9)
+  doc.setTextColor(...MUTED)
+  doc.text(
+    `Prepared with Triplora's Trip Planner 2.0 · ${formatDate(new Date())}`,
+    MARGIN,
+    y,
+  )
+
+  doc.addPage()
+
+  // -------------------------------------------------------------------------
+  // PACKING CHECKLIST
+  // -------------------------------------------------------------------------
+  let py = 20
+  py = sectionTitle(doc, 'Packing checklist', py)
+  py += 2
+  const packing: PlannerPackingItem[] = Array.isArray(trip.packing) ? trip.packing : []
+  if (packing.length > 0) {
+    autoTable(doc, {
+      startY: py,
+      margin: { left: MARGIN, right: MARGIN },
+      head: [['Item', 'Packed']],
+      body: packing.map((item) => [item.label, item.checked ? 'Yes' : '']),
+      theme: 'grid',
+      headStyles: { fillColor: TEAL, textColor: 255, fontStyle: 'bold' },
+      styles: { font: 'helvetica', fontSize: 9, cellPadding: 2.5, textColor: INK, lineColor: [203, 213, 225] },
+      columnStyles: { 0: { cellWidth: 'auto' }, 1: { cellWidth: 28, halign: 'center', fillColor: LIGHT } },
+    })
+    py = (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 10
+  } else {
+    py = drawChips(doc, ['Valid ID cards', 'Light cotton clothing', 'Comfortable shoes', 'Rain jacket', 'Sunscreen', 'Phone charger'], py)
+    py += 8
+  }
+
+  // -------------------------------------------------------------------------
+  // DAY-WISE ITINERARY (flowing pages)
+  // -------------------------------------------------------------------------
+  py = sectionTitle(doc, 'Day-wise itinerary', py)
+  py += 3
+
+  for (let i = 0; i < trip.days.length; i += 1) {
+    const day: PlannerTripDay = trip.days[i]
+    if (py > PAGE_H - 70) {
+      doc.addPage()
+      py = 20
+    }
+
+    doc.setFillColor(...TEAL)
+    doc.circle(MARGIN + 3, py - 1.5, 3, 'F')
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(13)
+    doc.setTextColor(...DARK_TEAL)
+    doc.text(`Day ${i + 1}${day.title ? ` - ${day.title}` : ''}`, MARGIN + 9, py)
+    const dayCost = day.items.reduce((sum, item) => sum + item.price, 0)
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(9.5)
+    doc.setTextColor(...MUTED)
+    doc.text(`${day.items.length} stops · Rs. ${dayCost.toLocaleString('en-IN')}`, PAGE_W - MARGIN, py, { align: 'right' })
+    py += 6
+
+    if (day.items.length === 0) {
+      doc.setFont('helvetica', 'italic')
+      doc.setFontSize(9.5)
+      doc.setTextColor(...MUTED)
+      doc.text('No stops planned yet.', MARGIN, py)
+      py += 6
+    } else {
+      autoTable(doc, {
+        startY: py,
+        margin: { left: MARGIN, right: MARGIN },
+        head: [['Time', 'Type', 'Stop', 'Est. cost']],
+        body: day.items.map((item, index) => {
+          const hour = 9 + index * 2
+          const time = `${hour > 12 ? hour - 12 : hour}:00 ${hour >= 12 ? 'PM' : 'AM'}`
+          const cityPart = item.city ? ` (${item.city})` : ''
+          return [time, TYPE_LABELS[item.type] ?? item.type, `${item.name}${cityPart}`, itemValue(item)]
+        }),
+        theme: 'grid',
+        headStyles: { fillColor: DARK_TEAL, textColor: 255, fontStyle: 'bold' },
+        styles: { font: 'helvetica', fontSize: 9, cellPadding: 2, textColor: INK, lineColor: [203, 213, 225] },
+        columnStyles: {
+          0: { fontStyle: 'bold', cellWidth: 26, fillColor: LIGHT },
+          1: { cellWidth: 26, fillColor: LIGHT },
+          2: { cellWidth: 'auto' },
+          3: { cellWidth: 30, halign: 'right' },
+        },
+      })
+      py = (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 3
+    }
+
+    if (day.notes) {
+      doc.setFont('helvetica', 'italic')
+      doc.setFontSize(9)
+      doc.setTextColor(...MUTED)
+      const noteLines = doc.splitTextToSize(`Notes: ${day.notes}`, CONTENT_W) as string[]
+      doc.text(noteLines, MARGIN, py)
+      py += noteLines.length * 4.5 + 3
+    }
+    py += 5
+  }
+
+  drawFooter(doc)
+
+  const safeName = title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '')
+    .slice(0, 60)
+  doc.save(`triplora-${safeName || 'trip'}.pdf`)
 }

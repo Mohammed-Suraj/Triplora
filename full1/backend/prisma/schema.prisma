@@ -82,6 +82,21 @@ enum ReportStatus {
   DISMISSED
 }
 
+enum HotelType {
+  HOTEL
+  RESORT
+  VILLA
+  HOMESTAY
+  BACKPACKER
+}
+
+enum HotelBookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
 enum NotificationType {
   BOOKING_CONFIRMED
   BOOKING_CANCELLED
@@ -111,8 +126,11 @@ model User {
 
   wishlists    Wishlist[]
   tripPlans    TripPlan[]
+  plannerTrips PlannerTrip[]
   reviews      Review[]
   bookings     Booking[]
+  hotelBookings HotelBooking[]
+  hotelReviews  HotelReview[]
   aiConversations AiConversation[]
   reviewLikes      ReviewLike[]
   reviewReports    ReviewReport[]
@@ -199,6 +217,7 @@ model Destination {
   itineraryItems  Itinerary[]
   wishlistedBy    Wishlist[]
   bookings        Booking[]
+  hotels          Hotel[]
 
   @@index([categoryId])
   @@index([region])
@@ -464,6 +483,143 @@ model Booking {
 }
 
 // ---------------------------------------------------------------------------
+// Hotel - discovery & booking for stays near each destination
+// ---------------------------------------------------------------------------
+
+model Hotel {
+  id                    String      @id @default(uuid())
+  slug                  String      @unique
+  name                  String
+  tagline               String
+  description           String
+  longDescription       String      @default("")
+  image                 String
+  gallery               String[]    @default([])
+  starRating            Int         @default(3)
+  rating                Float       @default(0)
+  reviewsCount          Int         @default(0)
+  popularityScore       Int         @default(0)
+  priceFrom             Int
+  hotelType             HotelType   @default(HOTEL)
+  location              String
+  latitude              Float?
+  longitude             Float?
+  distanceFromAttraction Float      @default(0)
+  checkIn               String      @default("2:00 PM")
+  checkOut              String      @default("11:00 AM")
+  cancellationPolicy    String
+  amenities             String[]    @default([])
+  familyFriendly        Boolean     @default(false)
+  coupleFriendly        Boolean     @default(false)
+  freeBreakfast         Boolean     @default(false)
+  freeWiFi              Boolean     @default(true)
+  swimmingPool          Boolean     @default(false)
+  parking               Boolean     @default(false)
+  airConditioning       Boolean     @default(false)
+  nearbyAttractions     String[]    @default([])
+  nearbyRestaurants     String[]    @default([])
+  nearbyTransport       String[]    @default([])
+  isActive              Boolean     @default(true)
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+
+  destinationId String
+  destination   Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+
+  rooms     HotelRoom[]
+  bookings  HotelBooking[]
+  reviews   HotelReview[]
+
+  @@index([destinationId])
+  @@index([hotelType])
+  @@index([isActive])
+  @@map("hotels")
+}
+
+model HotelRoom {
+  id            String   @id @default(uuid())
+  name          String
+  description   String?
+  pricePerNight Int
+  maxGuests     Int      @default(2)
+  bedType       String   @default("King")
+  totalRooms    Int      @default(5)
+  amenities     String[] @default([])
+  images        String[] @default([])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  hotelId  String
+  hotel    Hotel @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+
+  bookings HotelBooking[]
+
+  @@unique([hotelId, name])
+  @@index([hotelId])
+  @@map("hotel_rooms")
+}
+
+model HotelBooking {
+  id             String            @id @default(uuid())
+  bookingId      String            @unique
+  checkIn        DateTime
+  checkOut       DateTime
+  guests         Int
+  rooms          Int               @default(1)
+  nights         Int
+  pricePerNight  Int
+  taxes          Int               @default(0)
+  amount         Int
+  fullName       String
+  email          String
+  phone          String
+  specialRequests String?
+  status         HotelBookingStatus @default(PENDING)
+  paymentStatus  PaymentStatus     @default(PENDING)
+  paymentId      String?
+  orderId        String?
+  paidAt         DateTime?
+  paymentMethod  String?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  userId String
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  hotelId String
+  hotel   Hotel @relation(fields: [hotelId], references: [id], onDelete: Restrict)
+
+  roomId String
+  room   HotelRoom @relation(fields: [roomId], references: [id], onDelete: Restrict)
+
+  @@index([userId])
+  @@index([hotelId])
+  @@index([status])
+  @@index([checkIn])
+  @@map("hotel_bookings")
+}
+
+model HotelReview {
+  id        String   @id @default(uuid())
+  rating    Int
+  comment   String
+  images    String[] @default([])
+  stayDate  DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  hotelId String
+  hotel   Hotel @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, hotelId])
+  @@index([hotelId])
+  @@map("hotel_reviews")
+}
+
+// ---------------------------------------------------------------------------
 // ContactMessage
 // ---------------------------------------------------------------------------
 
@@ -478,4 +634,135 @@ model ContactMessage {
   createdAt DateTime      @default(now())
 
   @@map("contact_messages")
+}
+
+// ---------------------------------------------------------------------------
+// Restaurant
+// ---------------------------------------------------------------------------
+
+enum RestaurantCategory {
+  KERALA
+  SEAFOOD
+  VEGETARIAN
+  CAFE
+  FINE_DINING
+  BAKERY
+  FAST_FOOD
+}
+
+model Restaurant {
+  id               String             @id @default(uuid())
+  slug             String             @unique
+  name             String
+  tagline          String
+  description      String
+  longDescription  String             @default("")
+  category         RestaurantCategory @default(KERALA)
+  cuisines         String[]           @default([])
+  priceRange       String
+  priceLevel       Int                @default(2)
+  openingHours     String
+  phone            String?
+  address          String
+  city             String
+  latitude         Float?
+  longitude        Float?
+  googleMapsUrl    String
+  rating           Float              @default(0)
+  ratingNote       String             @default("Sample rating")
+  reviewsCount     Int                @default(0)
+  popularityScore  Int                @default(0)
+  bestFor          String[]           @default([])
+  image            String
+  gallery          String[]           @default([])
+  isActive         Boolean            @default(true)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  @@index([category])
+  @@index([city])
+  @@index([isActive])
+  @@map("restaurants")
+}
+
+// ---------------------------------------------------------------------------
+// Experience - curated local experiences across Kerala
+// ---------------------------------------------------------------------------
+
+enum ExperienceCategory {
+  ADVENTURE
+  CULTURE
+  WILDLIFE
+  FOOD
+  WELLNESS
+  NATURE
+  WATER_ACTIVITIES
+}
+
+enum ExperienceDifficulty {
+  EASY
+  MODERATE
+  CHALLENGING
+}
+
+model Experience {
+  id               String               @id @default(uuid())
+  slug             String               @unique
+  name             String
+  tagline          String
+  description      String
+  longDescription  String               @default("")
+  category         ExperienceCategory   @default(NATURE)
+  duration         String
+  price            Int                  @default(0)
+  location         String
+  city             String
+  latitude         Float?
+  longitude        Float?
+  difficulty       ExperienceDifficulty @default(EASY)
+  bestSeason       String
+  suitableFor      String[]             @default([])
+  highlights       String[]             @default([])
+  rating           Float                @default(0)
+  ratingNote       String               @default("Sample rating")
+  reviewsCount     Int                  @default(0)
+  popularityScore  Int                  @default(0)
+  isFeatured       Boolean              @default(false)
+  image            String
+  gallery          String[]             @default([])
+  isActive         Boolean              @default(true)
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+
+  @@index([category])
+  @@index([city])
+  @@index([isActive])
+  @@map("experiences")
+}
+
+// ---------------------------------------------------------------------------
+// PlannerTrip (Trip Planner 2.0 - hand-built multi-day itineraries)
+// ---------------------------------------------------------------------------
+
+model PlannerTrip {
+  id        String   @id @default(uuid())
+  title     String
+  startDate DateTime?
+  // PlannerDay[] as JSON: [{ id, title, notes, items: [{ id, type, refId, name,
+  // city, location, latitude, longitude, image, price, rating, duration,
+  // category, slug, href }] }] - a full snapshot so trips render even if the
+  // source hotel/restaurant/destination/experience changes later.
+  days      Json     @default("[]")
+  // Packing checklist state: [{ label, checked }]
+  packing   Json     @default("[]")
+  // Public short code enabling read-only sharing without an account.
+  shareCode String?  @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("planner_trips")
 }

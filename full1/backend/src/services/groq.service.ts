@@ -730,4 +730,136 @@ Respond ONLY with the COMPLETE modified itinerary as valid JSON in the exact sam
       return toCustomDestinationDTO(`Day ${index}`);
     });
   },
+
+  /**
+   * Trip Planner 2.0 "Deep optimize" - reorders/regroups an EXISTING hand-built
+   * itinerary. The LLM returns item ids arranged into days plus concise AI
+   * optimization insights.
+   */
+  async optimizePlannerTrip<Item extends { id: string }>(input: {
+    title: string;
+    days: Array<{ id: string; title: string; notes: string; items: Item[] }>;
+  }): Promise<{ days: Array<{ id: string; title: string; notes: string; items: Item[] }>; insights: string[] }> {
+    const slim = input.days.map((day) => ({
+      id: day.id,
+      title: day.title,
+      notes: day.notes,
+      items: day.items.map((item) => {
+        const raw = item as unknown as Record<string, unknown>;
+        return {
+          id: item.id,
+          type: asString(raw.type, ''),
+          name: asString(raw.name, ''),
+          city: asString(raw.city, ''),
+          price: typeof raw.price === 'number' ? raw.price : 0,
+          category: asString(raw.category, ''),
+          latitude: typeof raw.latitude === 'number' ? raw.latitude : null,
+          longitude: typeof raw.longitude === 'number' ? raw.longitude : null,
+        };
+      }),
+    }));
+
+    const prompt = `You are optimizing an EXISTING hand-built Kerala itinerary. The user wants a smarter daily flow.
+Optimization rules:
+- Keep EVERY item id exactly once across all days. Never invent, drop or duplicate ids.
+- Reorder items within each day for geographic proximity (minimize travel), with restaurants scheduled at lunch/dinner times and hotels at the end of the day.
+- You may MOVE items between days when it clearly reduces travel or balances workload.
+- Rewrite each day's "title" (2-6 words) and add a short "notes" line.
+- Provide 3-5 concise, practical AI "insights" summarizing what you improved (e.g. travel-time reduction, hotel placement, meal timing, weather considerations, budget tips).
+- ENRICH EACH DAY with a professional tour guide's insight using ONLY the day's own stops and their city/location (never invent stops that are not in the day's items):
+  - "description": 1-2 sentences describing the day's experience.
+  - "morning", "afternoon", "evening": what to do in each part of the day, matching the day's actual stops.
+  - "estimatedDailyCost": realistic total in INR for the day (e.g. "₹6,000 - ₹8,000").
+  - "localTransportation": 2-4 realistic local transport options for the day's route.
+  - "nearbyAttractions": 3-5 real nearby attractions relevant to the day's stops.
+  - "hiddenGems": 2-3 lesser-known places in the same area.
+  - "shopping": 2-3 markets or shops near the day's route.
+  - "travelTips": 2-3 practical tips for the day.
+- Respond ONLY with valid JSON: {
+    "insights": ["...", "..."],
+    "days": [{"id": "<existing day id>", "title": "...", "notes": "...", "description": "...", "morning": "...", "afternoon": "...", "evening": "...", "estimatedDailyCost": "...", "localTransportation": ["..."], "nearbyAttractions": ["..."], "hiddenGems": ["..."], "shopping": ["..."], "travelTips": ["..."], "items": [{"id": "<existing item id>"}]}]
+  }. Keep the original day ids and item ids.
+
+CURRENT ITINERARY (JSON):
+${JSON.stringify(slim)}
+
+Optimize it now.`;
+
+    const raw = await runGroqJson(
+      prompt,
+      'You are a precise travel itinerary optimizer for Kerala. You always reply with valid JSON in the exact schema requested and you never invent, drop or duplicate item ids.',
+      tokensForDays(input.days.length),
+    );
+
+    const parsed = raw as unknown as { days?: unknown[]; insights?: unknown[] };
+    const daysRaw = (parsed.days ?? []) as Array<Record<string, unknown> | undefined>;
+    const rawInsights = Array.isArray(parsed.insights) ? parsed.insights.map((s) => asString(s, '')).filter(Boolean) : [];
+
+    const byId = new Map<string, Item>();
+    for (const day of input.days) {
+      for (const item of day.items) {
+        byId.set(item.id, item);
+      }
+    }
+    const placed = new Set<string>();
+
+    const result = daysRaw.map((dayRaw, index) => {
+      const dayId = asString(dayRaw?.id, '') || input.days[index]?.id || `day-${index + 1}`;
+      const title = asString(dayRaw?.title, input.days[index]?.title || `Day ${index + 1}`);
+      const notes = asString(dayRaw?.notes, input.days[index]?.notes || '');
+      const items: Item[] = [];
+      if (Array.isArray(dayRaw?.items)) {
+        for (const entry of dayRaw.items) {
+          const itemId =
+            typeof entry === 'string'
+              ? entry
+              : asString((entry as { id?: unknown } | null)?.id, '');
+          const item = itemId ? byId.get(itemId) : undefined;
+          if (item && !placed.has(itemId)) {
+            items.push(item);
+            placed.add(itemId);
+          }
+        }
+      }
+      return {
+        id: dayId,
+        title,
+        notes,
+        description: asString(dayRaw?.description, ''),
+        morning: asString(dayRaw?.morning, ''),
+        afternoon: asString(dayRaw?.afternoon, ''),
+        evening: asString(dayRaw?.evening, ''),
+        estimatedDailyCost: asString(dayRaw?.estimatedDailyCost, ''),
+        localTransportation: asStringList(dayRaw?.localTransportation).slice(0, 6),
+        nearbyAttractions: asStringList(dayRaw?.nearbyAttractions).slice(0, 8),
+        hiddenGems: asStringList(dayRaw?.hiddenGems).slice(0, 6),
+        shopping: asStringList(dayRaw?.shopping).slice(0, 6),
+        travelTips: asStringList(dayRaw?.travelTips).slice(0, 6),
+        items,
+      };
+    });
+
+    // Safety net: any item the model missed goes back to its original day.
+    for (const day of input.days) {
+      const orphaned = day.items.filter((item) => !placed.has(item.id));
+      if (orphaned.length === 0) continue;
+      const target = result.find((d) => d.id === day.id) ?? result[0];
+      if (target) {
+        target.items.push(...orphaned);
+        orphaned.forEach((item) => placed.add(item.id));
+      }
+    }
+
+    if (result.length === 0) {
+      throw ApiError.internal('The AI optimizer returned no days.');
+    }
+
+    const insights = rawInsights.length > 0 ? rawInsights : [
+      'Regrouped stops by geographical proximity to reduce transit time.',
+      'Scheduled meal stops and restaurants at logical break intervals.',
+      'Placed hotels and overnight stays as the final stop of the day.'
+    ];
+
+    return { days: result, insights };
+  },
 };

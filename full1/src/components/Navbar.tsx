@@ -2,6 +2,7 @@
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { CalendarDays, ChevronRight, Compass, Heart, Menu, Moon, Route, Sparkles, Sun, User, X } from 'lucide-react'
+import { BedDouble } from 'lucide-react'
 import { useTheme } from '@/context/ThemeContext'
 import { useWishlist } from '@/context/WishlistContext'
 import { useAuth } from '@/context/AuthContext'
@@ -11,6 +12,9 @@ import { cn } from '@/lib/utils'
 const navLinks = [
   { to: '/', label: 'Home' },
   { to: '/explore', label: 'Explore' },
+  { to: '/hotels', label: 'Hotels' },
+  { to: '/restaurants', label: 'Restaurants' },
+  { to: '/experiences', label: 'Experiences' },
   { to: '/planner', label: 'Trip Planner' },
   { to: '/ai-assistant', label: 'AI Assistant', sparkle: true },
   { to: '/compare', label: 'Compare' },
@@ -61,7 +65,7 @@ export function Navbar() {
     >
       <nav
         aria-label="Main navigation"
-        className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 md:h-18 md:px-6"
+        className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-2 px-3 sm:gap-4 sm:px-4 md:h-18 md:px-6"
       >
         <Link
           to="/"
@@ -108,7 +112,7 @@ export function Navbar() {
           ))}
         </div>
 
-        <div className="flex items-center gap-1.5">
+        <div className="flex shrink-0 items-center gap-1 sm:gap-1.5">
           <button
             type="button"
             onClick={toggleTheme}
@@ -176,6 +180,7 @@ export function Navbar() {
                     <div className="flex flex-col p-1.5">
                       {[
                         { to: '/my-bookings', icon: CalendarDays, label: 'My Bookings' },
+                        { to: '/my-stays', icon: BedDouble, label: 'My Stays' },
                         { to: '/my-ai-trips', icon: Route, label: 'My AI Trips' },
                         { to: '/profile', icon: User, label: 'My Profile' },
                       ].map(({ to, icon: Icon, label }) => (
@@ -274,13 +279,22 @@ export function Navbar() {
                 className="mt-2 flex flex-col gap-2 border-t border-border pt-4"
               >
                 {user ? (
-                  <NavLink
-                    to="/profile"
-                    className="flex items-center justify-between rounded-xl bg-secondary px-4 py-3 text-base font-medium text-foreground transition-colors hover:bg-secondary/80"
-                  >
-                    My Profile
-                    <ChevronRight className="h-4 w-4 text-muted-foreground/50" aria-hidden="true" />
-                  </NavLink>
+                  <div className="flex flex-col gap-2">
+                    <NavLink
+                      to="/my-stays"
+                      className="flex items-center justify-between rounded-xl bg-secondary px-4 py-3 text-base font-medium text-foreground transition-colors hover:bg-secondary/80"
+                    >
+                      My Stays
+                      <ChevronRight className="h-4 w-4 text-muted-foreground/50" aria-hidden="true" />
+                    </NavLink>
+                    <NavLink
+                      to="/profile"
+                      className="flex items-center justify-between rounded-xl bg-secondary px-4 py-3 text-base font-medium text-foreground transition-colors hover:bg-secondary/80"
+                    >
+                      My Profile
+                      <ChevronRight className="h-4 w-4 text-muted-foreground/50" aria-hidden="true" />
+                    </NavLink>
+                  </div>
                 ) : (
                   <div className="grid grid-cols-2 gap-2">
                     <Link

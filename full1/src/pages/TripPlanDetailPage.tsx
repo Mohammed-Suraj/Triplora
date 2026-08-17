@@ -300,6 +300,7 @@ export function TripPlanDetailPage() {
         {hasPayload ? (
           <AiTripPlanView
             plan={plan.payload!}
+            stayStyle={plan.budget}
             actions={<DownloadPdfButton plan={plan.payload!} meta={{ title: plan.title, createdAt: plan.createdAt }} label="Download PDF" />}
           />
         ) : (

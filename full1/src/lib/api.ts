@@ -502,8 +502,431 @@ export const recommendationsApi = {
   list: (limit = 8) => api.get<Recommendation[]>('/recommendations?limit=' + limit),
 }
 
-export interface BookingResult {
+export type HotelType = 'HOTEL' | 'RESORT' | 'VILLA' | 'HOMESTAY' | 'BACKPACKER'
+
+export interface HotelRoom {
   id: string
+  name: string
+  description: string | null
+  pricePerNight: number
+  maxGuests: number
+  bedType: string
+  totalRooms: number
+  amenities: string[]
+  images: string[]
+}
+
+export interface Hotel {
+  id: string
+  slug: string
+  name: string
+  tagline: string
+  description: string
+  longDescription: string
+  image: string
+  gallery: string[]
+  starRating: number
+  rating: number
+  reviewsCount: number
+  popularityScore: number
+  priceFrom: number
+  hotelType: HotelType
+  location: string
+  latitude: number | null
+  longitude: number | null
+  distanceFromAttraction: number
+  checkIn: string
+  checkOut: string
+  cancellationPolicy: string
+  amenities: string[]
+  familyFriendly: boolean
+  coupleFriendly: boolean
+  freeBreakfast: boolean
+  freeWiFi: boolean
+  swimmingPool: boolean
+  parking: boolean
+  airConditioning: boolean
+  nearbyAttractions: string[]
+  nearbyRestaurants: string[]
+  nearbyTransport: string[]
+  destination: { id: string; name: string; slug: string; region: string }
+  rooms?: HotelRoom[]
+  similar?: Hotel[]
+  isActive?: boolean
+}
+
+export interface HotelListResult extends Array<Hotel> {}
+
+export interface HotelBookingResult {
+  id: string
+  bookingId: string
+  checkIn: string
+  checkOut: string
+  guests: number
+  rooms: number
+  nights: number
+  pricePerNight: number
+  taxes: number
+  amount: number
+  fullName: string
+  email: string
+  phone: string
+  specialRequests: string | null
+  status: 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'COMPLETED'
+  paymentStatus: 'PENDING' | 'PAID' | 'FAILED' | 'REFUNDED'
+  createdAt: string
+  hotel: {
+    id: string
+    name: string
+    slug: string
+    image: string
+    location: string
+    latitude: number | null
+    longitude: number | null
+  }
+  room: { id: string; name: string; bedType: string; maxGuests: number; images: string[] }
+}
+
+export interface HotelBookingsResult {
+  upcoming: HotelBookingResult[]
+  past: HotelBookingResult[]
+  all: HotelBookingResult[]
+}
+
+export interface HotelReview {
+  id: string
+  rating: number
+  comment: string
+  images: string[]
+  stayDate: string | null
+  createdAt: string
+  user: { id: string; name: string; avatar: string | null }
+}
+
+export interface HotelReviewListResult {
+  items: HotelReview[]
+  stats: {
+    average: number
+    total: number
+    withImages: number
+    distribution: Array<{ star: number; count: number }>
+  }
+}
+
+export interface HotelFilters {
+  q?: string
+  destination?: string
+  hotelType?: string
+  minPrice?: number | null
+  maxPrice?: number | null
+  minRating?: number | null
+  familyFriendly?: boolean
+  coupleFriendly?: boolean
+  freeBreakfast?: boolean
+  freeWiFi?: boolean
+  swimmingPool?: boolean
+  parking?: boolean
+  airConditioning?: boolean
+}
+
+export interface HotelInput {
+  name: string
+  tagline: string
+  description: string
+  longDescription?: string
+  image: string
+  gallery: string[]
+  starRating: number
+  priceFrom: number
+  hotelType: HotelType
+  location: string
+  latitude?: number | null
+  longitude?: number | null
+  distanceFromAttraction: number
+  checkIn: string
+  checkOut: string
+  cancellationPolicy: string
+  amenities: string[]
+  familyFriendly: boolean
+  coupleFriendly: boolean
+  freeBreakfast: boolean
+  freeWiFi: boolean
+  swimmingPool: boolean
+  parking: boolean
+  airConditioning: boolean
+  nearbyAttractions: string[]
+  nearbyRestaurants: string[]
+  nearbyTransport: string[]
+  destinationId: string
+}
+
+export interface HotelRoomInput {
+  name: string
+  description?: string | null
+  pricePerNight: number
+  maxGuests: number
+  bedType: string
+  totalRooms: number
+  amenities: string[]
+  images: string[]
+}
+
+export const hotelsApi = {
+  list: (params: Record<string, string> = {}) => {
+    const qs = new URLSearchParams(params).toString()
+    return api.get<HotelListResult>('/hotels' + (qs ? '?' + qs : ''))
+  },
+  get: (idOrSlug: string) => api.get<Hotel & { similar: Hotel[] }>('/hotels/' + idOrSlug),
+  byDestination: (destinationIdOrSlug: string, params: Record<string, string> = {}) => {
+    const qs = new URLSearchParams(params).toString()
+    return api.get<HotelListResult>('/hotels/destination/' + destinationIdOrSlug + (qs ? '?' + qs : ''))
+  },
+  recommend: (params: { style?: string; destination?: string; limit?: number }) => {
+    const qs = new URLSearchParams(params as Record<string, string>).toString()
+    return api.get<Hotel[]>('/hotels/recommend?' + qs)
+  },
+  create: (body: HotelInput) => api.post<Hotel>('/hotels', body),
+  update: (id: string, body: Partial<HotelInput> & { isActive?: boolean }) =>
+    api.patch<Hotel>('/hotels/' + id, body),
+  remove: (id: string) => api.del<null>('/hotels/' + id),
+  uploadImage: (file: File) => {
+    const form = new FormData()
+    form.append('image', file)
+    const token = getToken()
+    return fetch(`${BASE_URL}/hotels/upload`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      body: form,
+    }).then(async (res) => {
+      const json = await res.json().catch(() => ({}))
+      if (!res.ok) throw new ApiError(json?.message ?? 'Image upload failed', res.status)
+      return json as ApiEnvelope<{ url: string }>
+    })
+  },
+  createRoom: (hotelId: string, body: HotelRoomInput) => api.post<HotelRoom>('/hotels/' + hotelId + '/rooms', body),
+  updateRoom: (roomId: string, body: Partial<HotelRoomInput>) => api.patch<HotelRoom>('/hotels/rooms/' + roomId, body),
+  removeRoom: (roomId: string) => api.del<null>('/hotels/rooms/' + roomId),
+  book: (body: {
+    hotelId: string
+    roomId: string
+    checkIn: string
+    checkOut: string
+    guests: number
+    rooms: number
+    fullName: string
+    email: string
+    phone: string
+    specialRequests?: string
+  }) => api.post<HotelBookingResult>('/hotels/' + body.hotelId + '/book', body),
+  myBookings: () => api.get<HotelBookingsResult>('/hotels/bookings/mine'),
+  getBooking: (id: string) => api.get<HotelBookingResult>('/hotels/bookings/' + id),
+  getBookingByBookingId: (bookingId: string) =>
+    api.get<HotelBookingResult>('/hotels/bookings/booking-id/' + bookingId),
+  cancelBooking: (id: string) => api.patch<HotelBookingResult>('/hotels/bookings/' + id + '/cancel'),
+  adminBookings: (params: { page?: number; limit?: number; status?: string; search?: string } = {}) => {
+    const qs = new URLSearchParams(params as Record<string, string>).toString()
+    return api.get<HotelBookingResult[]>('/hotels/bookings/admin' + (qs ? '?' + qs : ''))
+  },
+  updateBookingStatus: (id: string, status: string) =>
+    api.patch<HotelBookingResult>('/hotels/bookings/' + id + '/status', { status }),
+}
+
+export type RestaurantCategory = 'KERALA' | 'SEAFOOD' | 'VEGETARIAN' | 'CAFE' | 'FINE_DINING' | 'BAKERY' | 'FAST_FOOD'
+
+export const RESTAURANT_CATEGORY_LABELS: Record<RestaurantCategory, string> = {
+  KERALA: 'Kerala',
+  SEAFOOD: 'Seafood',
+  VEGETARIAN: 'Vegetarian',
+  CAFE: 'Café',
+  FINE_DINING: 'Fine Dining',
+  BAKERY: 'Bakery',
+  FAST_FOOD: 'Fast Food',
+}
+
+export interface RestaurantPriceLevel {
+  level: number
+  symbol: string
+  label: string
+}
+
+export const RESTAURANT_PRICE_LEVELS: RestaurantPriceLevel[] = [
+  { level: 1, symbol: '₹', label: 'Budget' },
+  { level: 2, symbol: '₹₹', label: 'Moderate' },
+  { level: 3, symbol: '₹₹₹', label: 'Premium' },
+  { level: 4, symbol: '₹₹₹₹', label: 'Luxury' },
+]
+
+export function priceLevelInfo(level: number): RestaurantPriceLevel {
+  return RESTAURANT_PRICE_LEVELS.find((p) => p.level === level) ?? RESTAURANT_PRICE_LEVELS[1]
+}
+
+export interface Restaurant {
+  id: string
+  slug: string
+  name: string
+  tagline: string
+  description: string
+  longDescription: string
+  category: RestaurantCategory
+  cuisines: string[]
+  priceRange: string
+  priceLevel: number
+  openingHours: string
+  phone: string | null
+  address: string
+  city: string
+  latitude: number | null
+  longitude: number | null
+  googleMapsUrl: string
+  rating: number
+  ratingNote: string
+  reviewsCount: number
+  popularityScore: number
+  bestFor: string[]
+  image: string
+  gallery: string[]
+  similar?: Restaurant[]
+  isActive?: boolean
+}
+
+export interface RestaurantListResult extends Array<Restaurant> {}
+
+export interface RestaurantFilters {
+  q?: string
+  category?: string
+  city?: string
+  minPriceLevel?: number | null
+  maxPriceLevel?: number | null
+  minRating?: number | null
+}
+
+export const restaurantsApi = {
+  list: (params: Record<string, string> = {}) => {
+    const qs = new URLSearchParams(params).toString()
+    return api.get<RestaurantListResult>('/restaurants' + (qs ? '?' + qs : ''))
+  },
+  get: (idOrSlug: string) => api.get<Restaurant & { similar: Restaurant[] }>('/restaurants/' + idOrSlug),
+  recommend: (params: { craving?: string; category?: string; city?: string; limit?: number }) => {
+    const qs = new URLSearchParams(params as Record<string, string>).toString()
+    return api.get<Restaurant[]>('/restaurants/recommend?' + qs)
+  },
+  create: (body: Partial<Restaurant>) => api.post<Restaurant>('/restaurants', body),
+  update: (id: string, body: Partial<Restaurant>) => api.patch<Restaurant>('/restaurants/' + id, body),
+  remove: (id: string) => api.del<null>('/restaurants/' + id),
+}
+
+// ---------------------------------------------------------------------------
+// Local Experiences
+// ---------------------------------------------------------------------------
+
+export type ExperienceCategory =
+  | 'ADVENTURE'
+  | 'CULTURE'
+  | 'WILDLIFE'
+  | 'FOOD'
+  | 'WELLNESS'
+  | 'NATURE'
+  | 'WATER_ACTIVITIES'
+
+export const EXPERIENCE_CATEGORY_LABELS: Record<ExperienceCategory, string> = {
+  ADVENTURE: 'Adventure',
+  CULTURE: 'Culture',
+  WILDLIFE: 'Wildlife',
+  FOOD: 'Food',
+  WELLNESS: 'Wellness',
+  NATURE: 'Nature',
+  WATER_ACTIVITIES: 'Water Activities',
+}
+
+export type ExperienceDifficulty = 'EASY' | 'MODERATE' | 'CHALLENGING'
+
+export const EXPERIENCE_DIFFICULTY_LABELS: Record<ExperienceDifficulty, string> = {
+  EASY: 'Easy',
+  MODERATE: 'Moderate',
+  CHALLENGING: 'Challenging',
+}
+
+export const EXPERIENCE_SUITABLE_FOR = ['Solo', 'Couple', 'Family', 'Friends'] as const
+
+export interface Experience {
+  id: string
+  slug: string
+  name: string
+  tagline: string
+  description: string
+  longDescription: string
+  category: ExperienceCategory
+  duration: string
+  price: number
+  location: string
+  city: string
+  latitude: number | null
+  longitude: number | null
+  difficulty: ExperienceDifficulty
+  bestSeason: string
+  suitableFor: string[]
+  highlights: string[]
+  rating: number
+  ratingNote: string
+  reviewsCount: number
+  popularityScore: number
+  isFeatured: boolean
+  image: string
+  gallery: string[]
+  similar?: Experience[]
+  isActive?: boolean
+}
+
+export interface ExperienceListResult extends Array<Experience> {}
+
+export interface ExperienceFilters {
+  q?: string
+  category?: string
+  city?: string
+  difficulty?: string
+  minPrice?: number | null
+  maxPrice?: number | null
+  minRating?: number | null
+}
+
+export const experiencesApi = {
+  list: (params: Record<string, string> = {}) => {
+    const qs = new URLSearchParams(params).toString()
+    return api.get<ExperienceListResult>('/experiences' + (qs ? '?' + qs : ''))
+  },
+  get: (idOrSlug: string) => api.get<Experience & { similar: Experience[] }>('/experiences/' + idOrSlug),
+  create: (body: Partial<Experience>) => api.post<Experience>('/experiences', body),
+  update: (id: string, body: Partial<Experience>) => api.patch<Experience>('/experiences/' + id, body),
+  remove: (id: string) => api.del<null>('/experiences/' + id),
+}
+
+export const hotelReviewsApi = {
+  list: (hotelIdOrSlug: string) => api.get<HotelReviewListResult>('/hotels/' + hotelIdOrSlug + '/reviews'),
+  create: (hotelId: string, body: { rating: number; comment: string; images?: string[]; stayDate?: string | null }) =>
+    api.post<HotelReview>('/hotels/' + hotelId + '/reviews', body),
+  update: (hotelId: string, reviewId: string, body: { rating?: number; comment?: string; images?: string[] }) =>
+    api.patch<HotelReview>('/hotels/' + hotelId + '/reviews/' + reviewId, body),
+  remove: (hotelId: string, reviewId: string) =>
+    api.del<null>('/hotels/' + hotelId + '/reviews/' + reviewId),
+  uploadImage: (file: File) => {
+    const form = new FormData()
+    form.append('image', file)
+    const token = getToken()
+    return fetch(`${BASE_URL}/hotels/upload`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      body: form,
+    }).then(async (res) => {
+      const json = await res.json().catch(() => ({}))
+      if (!res.ok) throw new ApiError(json?.message ?? 'Image upload failed', res.status)
+      return json as ApiEnvelope<{ url: string }>
+    })
+  },
+}
+
+export interface BookingResult {  id: string
   bookingId: string
   fullName: string
   email: string
@@ -811,4 +1234,77 @@ export const adminApi = {
     api.get<DestinationPerformanceRow[]>('/admin/analytics/destination-performance'),
   monthlyReport: (month?: string) =>
     api.get<MonthlyReport>('/admin/analytics/monthly-report' + (month ? '?month=' + month : '')),
+}
+
+// ---------------------------------------------------------------------------
+// Trip Planner 2.0
+// ---------------------------------------------------------------------------
+
+export type PlannerItemType = 'HOTEL' | 'RESTAURANT' | 'DESTINATION' | 'EXPERIENCE'
+
+export interface PlannerTripItem {
+  id: string
+  type: PlannerItemType
+  refId: string | null
+  name: string
+  city: string
+  location: string
+  latitude: number | null
+  longitude: number | null
+  image: string
+  price: number
+  rating: number
+  duration: string
+  category: string
+  slug: string
+  href: string
+}
+
+export interface PlannerTripDay {
+  id: string
+  title: string
+  notes: string
+  /** AI-generated content (added by Deep AI Optimize; optional for hand-built trips). */
+  description?: string
+  morning?: string
+  afternoon?: string
+  evening?: string
+  estimatedDailyCost?: string
+  localTransportation?: string[]
+  nearbyAttractions?: string[]
+  hiddenGems?: string[]
+  shopping?: string[]
+  travelTips?: string[]
+  items: PlannerTripItem[]
+}
+
+export interface PlannerPackingItem {
+  label: string
+  checked: boolean
+}
+
+export interface PlannerTrip {
+  id: string
+  title: string
+  startDate: string | null
+  days: PlannerTripDay[]
+  packing: PlannerPackingItem[]
+  shareCode: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+export const plannerApi = {
+  list: () => api.get<PlannerTrip[]>('/planner'),
+  create: (body: { title: string; startDate?: string | null; days?: PlannerTripDay[]; packing?: PlannerPackingItem[] }) =>
+    api.post<PlannerTrip>('/planner', body),
+  get: (id: string) => api.get<PlannerTrip>('/planner/' + id),
+  update: (id: string, body: { title?: string; startDate?: string | null; days?: PlannerTripDay[]; packing?: PlannerPackingItem[] }) =>
+    api.patch<PlannerTrip>('/planner/' + id, body),
+  remove: (id: string) => api.del<null>('/planner/' + id),
+  duplicate: (id: string) => api.post<PlannerTrip>('/planner/' + id + '/duplicate'),
+  generateShareCode: (id: string) => api.post<PlannerTrip>('/planner/' + id + '/share'),
+  getShared: (code: string) => api.get<PlannerTrip>('/planner/share/' + code),
+  optimizeAi: (body: { title: string; days: PlannerTripDay[] }) =>
+    api.post<{ days: PlannerTripDay[]; insights: string[] }>('/planner/optimize-ai', body),
 }

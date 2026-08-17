@@ -30,6 +30,7 @@ import type { AiTripPlanResult } from '@/lib/api'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { SmartImage } from '@/components/ui/SmartImage'
+import { RecommendedStays } from '@/components/hotels/RecommendedStays'
 import { cn } from '@/lib/utils'
 
 interface SectionIconProps {
@@ -117,13 +118,14 @@ interface AiTripPlanViewProps {
   plan: AiTripPlanResult
   onStartOver?: () => void
   actions?: ReactNode
+  stayStyle?: string
 }
 
 /**
  * Renders a complete AI trip plan (header, trip essentials, per-day cards).
  * Reused by the planner, the trip detail page and the AI chat assistant.
  */
-export function AiTripPlanView({ plan, onStartOver, actions }: AiTripPlanViewProps) {
+export function AiTripPlanView({ plan, onStartOver, actions, stayStyle }: AiTripPlanViewProps) {
   const { title, summary, bestSeason, itinerary } = plan
 
   return (
@@ -225,17 +227,17 @@ export function AiTripPlanView({ plan, onStartOver, actions }: AiTripPlanViewPro
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.45, delay: index * 0.08, ease: 'easeOut' }}
-              className="group flex flex-col gap-4 overflow-hidden rounded-2xl bg-card p-4 shadow-sm ring-1 ring-border transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:ring-primary/15 sm:flex-row"
+              className="group flex flex-col gap-5 overflow-hidden rounded-3xl bg-card p-5 shadow-sm ring-1 ring-border transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:ring-primary/25 lg:flex-row"
             >
-              <div className="relative h-40 w-full shrink-0 overflow-hidden rounded-xl sm:h-auto sm:w-44">
+              <div className="relative h-56 w-full shrink-0 overflow-hidden rounded-2xl lg:h-auto lg:w-64">
                 <SmartImage
                   src={item.destination.image}
                   alt={item.destination.name}
                   loading="lazy"
                   className="h-full w-full transition-transform duration-700 ease-out group-hover:scale-105"
                 />
-                <span className="glass absolute top-2 left-2 flex h-8 items-center rounded-full px-3 text-xs font-bold text-white shadow-sm">
-                  Day {item.day}
+                <span className="glass-strong absolute top-3 left-3 flex h-8 items-center rounded-full px-3.5 text-xs font-bold text-white shadow-md">
+                  DAY {item.day} — {item.destination.name}
                 </span>
               </div>
               <div className="flex flex-1 flex-col gap-2 py-1 sm:pr-2">
@@ -334,10 +336,15 @@ export function AiTripPlanView({ plan, onStartOver, actions }: AiTripPlanViewPro
                   </Link>
                 )}
               </div>
-            </motion.article>
-          )
-        })}
-      </div>
+              </motion.article>
+            )
+          })}
+        </div>
+
+      <RecommendedStays
+        slugs={plan.itinerary.map((item) => item.destination.slug).filter(Boolean)}
+        style={stayStyle}
+      />
     </motion.div>
   )
 }

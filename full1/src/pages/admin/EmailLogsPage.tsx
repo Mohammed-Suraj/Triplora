@@ -58,7 +58,7 @@ export function EmailLogsPage() {
       setLoading(true)
       setError(null)
       try {
-        const params: { limit: number; type?: string; status?: string } = { limit: 100 }
+        const params: { limit: number; type?: string; status?: string } = { limit: 50 }
         if (typeFilter) params.type = typeFilter
         if (statusFilter) params.status = statusFilter
         const res = await adminApi.emailLogs(params)

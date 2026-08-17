@@ -14,12 +14,13 @@ import {
   Bell,
   CalendarClock,
   Sparkles,
+  BedDouble,
 } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/context/AuthContext'
 import { useWishlist } from '@/context/WishlistContext'
 import { useToast } from '@/context/ToastContext'
-import { authApi, bookingApi, type BookingResult, type EmailPreferences } from '@/lib/api'
+import { authApi, bookingApi, hotelsApi, type BookingResult, type EmailPreferences } from '@/lib/api'
 import { Button } from '@/components/ui/Button'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { cn } from '@/lib/utils'
@@ -32,6 +33,8 @@ export function ProfilePage() {
 
   const [bookings, setBookings] = useState<BookingResult[]>([])
   const [loadingBookings, setLoadingBookings] = useState(true)
+  const [stays, setStays] = useState<Array<{ id: string }>>([])
+  const [loadingStays, setLoadingStays] = useState(true)
 
   // Email preferences state
   const [prefs, setPrefs] = useState<EmailPreferences | null>(null)
@@ -58,6 +61,14 @@ export function ProfilePage() {
       .then((res) => setBookings(res.data))
       .catch(() => {})
       .finally(() => setLoadingBookings(false))
+  }, [])
+
+  useEffect(() => {
+    hotelsApi
+      .myBookings()
+      .then((res) => setStays(res.data.all))
+      .catch(() => {})
+      .finally(() => setLoadingStays(false))
   }, [])
 
   useEffect(() => {
@@ -410,7 +421,7 @@ export function ProfilePage() {
         </div>
 
         {/* Statistics Grid */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
           <Link
             to="/my-bookings"
             className="press glass card-lift flex items-center gap-4 rounded-2xl p-5 shadow-sm ring-1 ring-border"
@@ -453,6 +464,21 @@ export function ProfilePage() {
                 {loadingBookings ? <Skeleton className="h-7 w-10" /> : completedBookingsCount}
               </p>
               <p className="text-xs font-medium text-muted-foreground">Completed Trips</p>
+            </div>
+          </Link>
+
+          <Link
+            to="/my-stays"
+            className="press glass card-lift flex items-center gap-4 rounded-2xl p-5 shadow-sm ring-1 ring-border"
+          >
+            <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-teal-500/10 text-teal-600 dark:text-teal-400">
+              <BedDouble className="h-6 w-6" />
+            </span>
+            <div>
+              <p className="text-2xl font-bold text-foreground">
+                {loadingStays ? <Skeleton className="h-7 w-10" /> : stays.length}
+              </p>
+              <p className="text-xs font-medium text-muted-foreground">My Stays</p>
             </div>
           </Link>
 

@@ -3,6 +3,9 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { ThemeProvider } from '@/context/ThemeContext'
 import { AuthProvider } from '@/context/AuthContext'
 import { WishlistProvider } from '@/context/WishlistContext'
+import { RestaurantFavoritesProvider } from '@/context/RestaurantFavoritesContext'
+import { ExperienceWishlistProvider } from '@/context/ExperienceWishlistContext'
+import { ExperiencePlannerProvider } from '@/context/ExperiencePlannerContext'
 import { NotificationProvider } from '@/context/NotificationContext'
 import { ToastProvider } from '@/context/ToastContext'
 import { Layout } from '@/components/Layout'
@@ -21,6 +24,15 @@ import { MyBookingsPage } from '@/pages/MyBookingsPage'
 import { BookingDetailsPage } from '@/pages/BookingDetailsPage'
 import { MyAiTripsPage } from '@/pages/MyAiTripsPage'
 import { TripPlanDetailPage } from '@/pages/TripPlanDetailPage'
+import { HotelsPage } from '@/pages/HotelsPage'
+import { HotelDetailsPage } from '@/pages/HotelDetailsPage'
+import { HotelBookingPage } from '@/pages/HotelBookingPage'
+import { HotelConfirmationPage } from '@/pages/HotelConfirmationPage'
+import { MyStaysPage } from '@/pages/MyStaysPage'
+import { RestaurantsPage } from '@/pages/RestaurantsPage'
+import { RestaurantDetailsPage } from '@/pages/RestaurantDetailsPage'
+import { ExperiencesPage } from '@/pages/ExperiencesPage'
+import { ExperienceDetailsPage } from '@/pages/ExperienceDetailsPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
 import { ProtectedAdminRoute } from '@/components/admin/ProtectedAdminRoute'
 import { AdminLayout } from '@/components/admin/AdminLayout'
@@ -33,6 +45,8 @@ import { ReviewsPage } from '@/pages/admin/ReviewsPage'
 import { ContactMessagesPage } from '@/pages/admin/ContactMessagesPage'
 import { EmailLogsPage } from '@/pages/admin/EmailLogsPage'
 import { SettingsPage } from '@/pages/admin/SettingsPage'
+import { HotelsPage as AdminHotelsPage } from '@/pages/admin/HotelsPage'
+import { AdminHotelBookingsPage } from '@/pages/admin/AdminHotelBookingsPage'
 
 const AiAssistantPage = lazy(() =>
   import('@/pages/AiAssistantPage').then((m) => ({ default: m.AiAssistantPage })),
@@ -48,6 +62,12 @@ const AnalyticsPage = lazy(() =>
 )
 const ReviewReportsPage = lazy(() =>
   import('@/pages/admin/ReviewReportsPage').then((m) => ({ default: m.ReviewReportsPage })),
+)
+const PlannerBuilderPage = lazy(() =>
+  import('@/pages/PlannerBuilderPage').then((m) => ({ default: m.PlannerBuilderPage })),
+)
+const PlannerSharePage = lazy(() =>
+  import('@/pages/PlannerSharePage').then((m) => ({ default: m.PlannerSharePage })),
 )
 
 function PageFallback() {
@@ -71,7 +91,10 @@ export default function App() {
           <AuthProvider>
             <NotificationProvider>
               <WishlistProvider>
-                <Suspense fallback={<PageFallback />}>
+                <RestaurantFavoritesProvider>
+                  <ExperienceWishlistProvider>
+                    <ExperiencePlannerProvider>
+                      <Suspense fallback={<PageFallback />}>
                   <Routes>
                   <Route path="/admin/login" element={<AdminLoginPage />} />
                   <Route path="/admin" element={<ProtectedAdminRoute />}>
@@ -80,6 +103,8 @@ export default function App() {
                       <Route path="dashboard" element={<DashboardPage />} />
                       <Route path="users" element={<UsersPage />} />
                       <Route path="destinations" element={<DestinationsPage />} />
+                      <Route path="hotels" element={<AdminHotelsPage />} />
+                      <Route path="hotel-bookings" element={<AdminHotelBookingsPage />} />
                       <Route path="bookings" element={<BookingsPage />} />
                       <Route path="reviews" element={<ReviewsPage />} />
                       <Route path="review-reports" element={<ReviewReportsPage />} />
@@ -92,27 +117,42 @@ export default function App() {
                   <Route element={<Layout />}>
                     <Route path="/" element={<HomePage />} />
                     <Route path="/explore" element={<ExplorePage />} />
+                    <Route path="/hotels" element={<HotelsPage />} />
+                    <Route path="/hotels/:id" element={<HotelDetailsPage />} />
+                    <Route path="/restaurants" element={<RestaurantsPage />} />
+                    <Route path="/restaurants/:id" element={<RestaurantDetailsPage />} />
+                    <Route path="/experiences" element={<ExperiencesPage />} />
+                    <Route path="/experiences/:id" element={<ExperienceDetailsPage />} />
                     <Route path="/destinations/:id" element={<DestinationDetailsPage />} />
                     <Route path="/compare" element={<ComparePage />} />
                     <Route path="/about" element={<AboutPage />} />
                     <Route path="/contact" element={<ContactPage />} />
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/register" element={<RegisterPage />} />
+                    <Route path="/planner/share/:code" element={<PlannerSharePage />} />
                     <Route element={<ProtectedRoute />}>
                       <Route path="/planner" element={<PlannerPage />} />
+                      <Route path="/planner/builder" element={<PlannerBuilderPage />} />
+                      <Route path="/planner/ai" element={<PlannerPage />} />
                       <Route path="/ai-assistant" element={<AiAssistantPage />} />
                       <Route path="/notifications" element={<NotificationsPage />} />
                       <Route path="/wishlist" element={<WishlistPage />} />
                       <Route path="/profile" element={<ProfilePage />} />
                       <Route path="/my-bookings" element={<MyBookingsPage />} />
                       <Route path="/bookings/:id" element={<BookingDetailsPage />} />
+                      <Route path="/hotels/book" element={<HotelBookingPage />} />
+                      <Route path="/hotels/bookings/confirmation/:bookingId" element={<HotelConfirmationPage />} />
+                      <Route path="/my-stays" element={<MyStaysPage />} />
                       <Route path="/my-ai-trips" element={<MyAiTripsPage />} />
                       <Route path="/my-ai-trips/:id" element={<TripPlanDetailPage />} />
                     </Route>
                     <Route path="*" element={<NotFoundPage />} />
                   </Route>
                   </Routes>
-                </Suspense>
+                    </Suspense>
+                  </ExperiencePlannerProvider>
+                </ExperienceWishlistProvider>
+                </RestaurantFavoritesProvider>
               </WishlistProvider>
             </NotificationProvider>
           </AuthProvider>

@@ -26,7 +26,7 @@ export function ContactMessagesPage() {
 
   const loadMessages = () => {
     adminApi
-      .contactMessages({ limit: 100 })
+      .contactMessages({ limit: 50 })
       .then((res) => setMessages(res.data))
       .catch((err) => setError(err instanceof Error ? err.message : 'Failed to load messages'))
       .finally(() => setLoading(false))

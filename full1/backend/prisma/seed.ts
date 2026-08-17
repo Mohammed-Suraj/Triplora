@@ -1,6 +1,9 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import { keralaDestinations, newCategories, destinationPopularity, destinationCoordinates } from '../src/data/keralaDestinations';
+import { hotelSeeds } from '../src/data/hotelSeed';
+import { restaurantSeeds } from '../src/data/restaurantSeed';
+import { experienceSeeds } from '../src/data/experienceSeed';
 
 const prisma = new PrismaClient();
 
@@ -267,6 +270,173 @@ async function main() {
       where: { slug },
       data: { latitude: coords.latitude, longitude: coords.longitude },
     });
+  }
+
+  console.log('Seeding hotels...');
+  for (const hotel of hotelSeeds) {
+    const destination = await prisma.destination.findUnique({
+      where: { slug: hotel.destinationSlug },
+      select: { id: true },
+    });
+    if (!destination) continue;
+
+    const created = await prisma.hotel.upsert({
+      where: { slug: hotel.slug },
+      // Refresh image/gallery on re-runs while leaving admin edits untouched.
+      update: { image: hotel.image, gallery: hotel.gallery },
+      create: {
+        slug: hotel.slug,
+        name: hotel.name,
+        tagline: hotel.tagline,
+        description: hotel.description,
+        longDescription: hotel.longDescription,
+        image: hotel.image,
+        gallery: hotel.gallery,
+        starRating: hotel.starRating,
+        rating: hotel.rating,
+        reviewsCount: hotel.reviewsCount,
+        popularityScore: hotel.popularityScore,
+        priceFrom: hotel.priceFrom,
+        hotelType: hotel.hotelType,
+        location: hotel.location,
+        latitude: hotel.latitude,
+        longitude: hotel.longitude,
+        distanceFromAttraction: hotel.distanceFromAttraction,
+        checkIn: hotel.checkIn,
+        checkOut: hotel.checkOut,
+        cancellationPolicy: hotel.cancellationPolicy,
+        amenities: hotel.amenities,
+        familyFriendly: hotel.familyFriendly,
+        coupleFriendly: hotel.coupleFriendly,
+        freeBreakfast: hotel.freeBreakfast,
+        freeWiFi: hotel.freeWiFi,
+        swimmingPool: hotel.swimmingPool,
+        parking: hotel.parking,
+        airConditioning: hotel.airConditioning,
+        nearbyAttractions: hotel.nearbyAttractions,
+        nearbyRestaurants: hotel.nearbyRestaurants,
+        nearbyTransport: hotel.nearbyTransport,
+        destinationId: destination.id,
+      },
+    });
+
+    for (const room of hotel.rooms) {
+      await prisma.hotelRoom.upsert({
+        where: { hotelId_name: { hotelId: created.id, name: room.name } },
+        update: {
+          pricePerNight: room.pricePerNight,
+          totalRooms: room.totalRooms,
+          images: room.images && room.images.length > 0 ? room.images : [created.image],
+        },
+        create: {
+          hotelId: created.id,
+          name: room.name,
+          description: room.description ?? null,
+          pricePerNight: room.pricePerNight,
+          maxGuests: room.maxGuests,
+          bedType: room.bedType,
+          totalRooms: room.totalRooms,
+          amenities: room.amenities,
+          images: room.images && room.images.length > 0 ? room.images : [created.image],
+        },
+      });
+    }
+  }
+
+  console.log('Seeding restaurants...');
+  for (const restaurant of restaurantSeeds) {
+    await prisma.restaurant.upsert({
+      where: { slug: restaurant.slug },
+      // Refresh demo-facing fields on re-runs while leaving admin edits untouched.
+      update: { image: restaurant.image, gallery: restaurant.gallery, rating: restaurant.rating, reviewsCount: restaurant.reviewsCount },
+      create: {
+        slug: restaurant.slug,
+        name: restaurant.name,
+        tagline: restaurant.tagline,
+        description: restaurant.description,
+        longDescription: restaurant.longDescription,
+        category: restaurant.category,
+        cuisines: restaurant.cuisines,
+        priceRange: restaurant.priceRange,
+        priceLevel: restaurant.priceLevel,
+        openingHours: restaurant.openingHours,
+        phone: restaurant.phone,
+        address: restaurant.address,
+        city: restaurant.city,
+        latitude: restaurant.latitude,
+        longitude: restaurant.longitude,
+        googleMapsUrl: restaurant.googleMapsUrl,
+        rating: restaurant.rating,
+        ratingNote: restaurant.ratingNote,
+        popularityScore: restaurant.popularityScore,
+        bestFor: restaurant.bestFor,
+        image: restaurant.image,
+        gallery: restaurant.gallery,
+      },
+    });
+  }
+
+  console.log('Seeding experiences...');
+  for (const experience of experienceSeeds) {
+    await prisma.experience.upsert({
+      where: { slug: experience.slug },
+      update: {
+        image: experience.image,
+        gallery: experience.gallery,
+        rating: experience.rating,
+        reviewsCount: experience.reviewsCount,
+        isFeatured: experience.isFeatured,
+      },
+      create: {
+        slug: experience.slug,
+        name: experience.name,
+        tagline: experience.tagline,
+        description: experience.description,
+        longDescription: experience.longDescription,
+        category: experience.category,
+        duration: experience.duration,
+        price: experience.price,
+        location: experience.location,
+        city: experience.city,
+        latitude: experience.latitude,
+        longitude: experience.longitude,
+        difficulty: experience.difficulty,
+        bestSeason: experience.bestSeason,
+        suitableFor: experience.suitableFor,
+        highlights: experience.highlights,
+        rating: experience.rating,
+        ratingNote: experience.ratingNote,
+        popularityScore: experience.popularityScore,
+        isFeatured: experience.isFeatured,
+        image: experience.image,
+        gallery: experience.gallery,
+      },
+    });
+  }
+
+  console.log('Seeding demo hotel reviews...');
+  const demoUser = await prisma.user.findUnique({ where: { email: 'demo@triplora.travel' } });
+  if (demoUser) {
+    const reviewTargets = [
+      { hotelSlug: 'teanest-munnar', rating: 5, comment: 'The veranda views over the tea estate are unreal. Home-cooked dinners, bonfire nights and a host family that treats you like their own. Worth every rupee.' },
+      { hotelSlug: 'mist-valley-resort-munnar', rating: 4, comment: 'Gorgeous infinity pool above the clouds and a fantastic spa. Rooms are plush; breakfast buffet is outstanding.' },
+      { hotelSlug: 'lake-palace-alleppey', rating: 5, comment: 'Stayed two nights and took the houseboat for a day trip. Antique charm meets real comfort — the karimeen pollichathu at sunset is a memory for life.' },
+    ];
+    for (const target of reviewTargets) {
+      const hotel = await prisma.hotel.findUnique({ where: { slug: target.hotelSlug }, select: { id: true } });
+      if (!hotel) continue;
+      await prisma.hotelReview.upsert({
+        where: { userId_hotelId: { userId: demoUser.id, hotelId: hotel.id } },
+        update: {},
+        create: {
+          userId: demoUser.id,
+          hotelId: hotel.id,
+          rating: target.rating,
+          comment: target.comment,
+          stayDate: new Date(),
+        },
+      });
+    }
   }
 
   console.log('Seeding demo user...');

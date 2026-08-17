@@ -66,6 +66,17 @@ const apiStyleToUi: Record<string, string> = {
 
 const clampDays = (value: number) => Math.min(30, Math.max(1, Math.round(value)))
 
+const EXPLICIT_DAYS_RE = /\b(\d{1,2})\s*(?:-|–)?\s*days?\b/i
+const DURATION_HINT_RE = /\b(\d{1,2})\s*(?:-|–)?\s*days?\b|\b(?:weekend|week|fortnight)\b/i
+
+const explicitDaysFromPrompt = (text: string): number | null => {
+  const match = text.match(EXPLICIT_DAYS_RE)
+  if (!match) return null
+  return clampDays(Number(match[1]))
+}
+
+const promptHasDurationHint = (text: string): boolean => DURATION_HINT_RE.test(text)
+
 export function PlannerPage() {
   const toast = useToast()
   const [budget, setBudget] = useState<string>('premium')
@@ -124,19 +135,22 @@ export function PlannerPage() {
   }
 
   const buildItinerary = async () => {
+    const explicitDays = explicitDaysFromPrompt(prompt)
+    if (explicitDays) setDays(explicitDays)
+    const targetDays = explicitDays ?? days
     setLoading(true)
     setPlan(null)
     setError(null)
     try {
       const res = await aiTripPlanApi.generate({
         budget: budgetToApi[budget] ?? 'RELAXED',
-        days,
+        days: targetDays,
         travelStyle: styleToApi[style] ?? 'SOLO',
         interests: selectedInterests,
         destination: destinationInput.trim() || null,
       })
       showPlan(res.data)
-      toast.success(`Generated a ${days}-day Kerala itinerary!`)
+      toast.success(`Generated a ${targetDays}-day Kerala itinerary!`)
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Could not generate an itinerary. Please try again.'
       setError(msg)
@@ -152,14 +166,19 @@ export function PlannerPage() {
       toast.error('Describe your trip first - for example "Plan a 5-day honeymoon in Kerala under ₹30000".')
       return
     }
+    const explicitDays = explicitDaysFromPrompt(text)
+    if (explicitDays) setDays(explicitDays)
     setLoading(true)
     setPlan(null)
     setError(null)
     try {
-      const res = await aiTripPlanApi.natural(text)
+      // When the prompt specifies no duration, the manually selected Trip Length must win.
+      // Append it to the request so the backend generates exactly that many days.
+      const requestText = promptHasDurationHint(text) ? text : `${text} for ${days} days`
+      const res = await aiTripPlanApi.natural(requestText)
       const { plan: parsedPlan, parsed } = res.data
-      // Auto-update the planner UI with the parsed trip details (no manual selection needed).
-      setDays(parsed.days)
+      // Keep the Trip Length selector in sync with what was actually requested.
+      setDays(explicitDays ?? days)
       if (parsed.budget) setBudget(apiBudgetToUi[parsed.budget] ?? budget)
       if (parsed.travelStyle) setStyle(apiStyleToUi[parsed.travelStyle] ?? style)
       if (parsed.destination) setDestinationInput(parsed.destination)
@@ -529,6 +548,7 @@ export function PlannerPage() {
                 key="result"
                 plan={plan}
                 onStartOver={reset}
+                stayStyle={budget}
                 actions={
                   <>
                     <DownloadPdfButton plan={plan} />

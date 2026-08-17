@@ -55,6 +55,60 @@ export interface TripPlanDTO {
   itinerary: ItineraryDayDTO[];
 }
 
+export type PlannerItemType = 'HOTEL' | 'RESTAURANT' | 'DESTINATION' | 'EXPERIENCE';
+
+export interface PlannerTripItem {
+  id: string;
+  type: PlannerItemType;
+  refId: string | null;
+  name: string;
+  city: string;
+  location: string;
+  latitude: number | null;
+  longitude: number | null;
+  image: string;
+  price: number;
+  rating: number;
+  duration: string;
+  category: string;
+  slug: string;
+  href: string;
+}
+
+export interface PlannerTripDay {
+  id: string;
+  title: string;
+  notes: string;
+  /** AI-generated content (added by Deep AI Optimize; optional for hand-built trips). */
+  description?: string;
+  morning?: string;
+  afternoon?: string;
+  evening?: string;
+  estimatedDailyCost?: string;
+  localTransportation?: string[];
+  nearbyAttractions?: string[];
+  hiddenGems?: string[];
+  shopping?: string[];
+  travelTips?: string[];
+  items: PlannerTripItem[];
+}
+
+export interface PlannerPackingItem {
+  label: string;
+  checked: boolean;
+}
+
+export interface PlannerTripDTO {
+  id: string;
+  title: string;
+  startDate: string | null;
+  days: PlannerTripDay[];
+  packing: PlannerPackingItem[];
+  shareCode: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface ContactMessageDTO {
   id: string;
   name: string;

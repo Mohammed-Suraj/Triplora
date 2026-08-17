@@ -14,6 +14,10 @@ import adminRoutes from './admin.routes';
 import assistantRoutes from './assistant.routes';
 import notificationRoutes from './notification.routes';
 import recommendationRoutes from './recommendation.routes';
+import hotelRoutes from './hotel.routes';
+import restaurantRoutes from './restaurant.routes';
+import experienceRoutes from './experience.routes';
+import plannerTripRoutes from './plannerTrip.routes';
 
 const router = Router();
 
@@ -35,6 +39,10 @@ router.use('/ai', groqRoutes);
 router.use('/weather', weatherRoutes);
 router.use('/notifications', notificationRoutes);
 router.use('/recommendations', recommendationRoutes);
+router.use('/hotels', hotelRoutes);
+router.use('/restaurants', restaurantRoutes);
+router.use('/experiences', experienceRoutes);
+router.use('/planner', plannerTripRoutes);
 router.use('/admin', adminRoutes);
 
 export default router;
