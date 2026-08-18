@@ -119,7 +119,7 @@ export function HotelBookingPage() {
 
     setSubmitting(true)
     try {
-      const res = await hotelsApi.book({
+      await hotelsApi.book({
         hotelId: hotel.id,
         roomId: room.id,
         checkIn,
@@ -132,7 +132,7 @@ export function HotelBookingPage() {
         specialRequests: specialRequests.trim() || undefined,
       })
       toast.success('Stay reserved successfully!')
-      navigate(`/hotels/bookings/confirmation/${res.data.id}`, { replace: true })
+      navigate('/my-stays', { replace: true })
     } catch (err) {
       setFormError(err instanceof Error ? err.message : 'Booking failed. Please try again.')
       toast.error(err instanceof Error ? err.message : 'Booking failed')
