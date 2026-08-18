@@ -57,6 +57,7 @@ router.delete('/rooms/:id', requireAuth, requireRole('ADMIN'), validate(roomIdPa
 router.get('/bookings/mine', requireAuth, hotelController.myBookings);
 router.get('/bookings/booking-id/:bookingId', requireAuth, hotelController.getBookingByBookingId);
 router.get('/bookings/admin', requireAuth, requireRole('ADMIN'), validate(listHotelBookingsQuerySchema), hotelController.adminBookings);
+router.get('/bookings/:id', requireAuth, validate(hotelIdParamSchema), hotelController.getBookingById);
 router.post('/:id/book', requireAuth, validate(createHotelBookingSchema), hotelController.createBooking);
 router.patch('/bookings/:id/cancel', requireAuth, validate(hotelIdParamSchema), hotelController.cancelBooking);
 router.patch(
