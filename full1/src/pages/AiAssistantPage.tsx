@@ -21,6 +21,7 @@ import { useToast } from '@/context/ToastContext'
 import { Button } from '@/components/ui/Button'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { SmartImage } from '@/components/ui/SmartImage'
+import { MarkdownContent } from '@/components/ui/MarkdownContent'
 import { cn } from '@/lib/utils'
 
 const suggestions = [
@@ -46,10 +47,6 @@ function timeAgo(value: string): string {
   const hours = Math.floor(minutes / 60)
   if (hours < 24) return `${hours}h ago`
   return new Date(value).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })
-}
-
-function formatMessage(content: string): string[] {
-  return content.split('\n').filter((line) => line.trim().length > 0)
 }
 
 export function AiAssistantPage() {
@@ -307,20 +304,14 @@ export function AiAssistantPage() {
                 <div key={index} className={cn('flex flex-col', entry.role === 'USER' ? 'items-end' : 'items-start')}>
                   <div
                     className={cn(
-                      'max-w-[92%] rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap md:max-w-[80%]',
+                      'min-w-0 max-w-[92%] rounded-2xl px-4 py-3 text-sm leading-relaxed [overflow-wrap:anywhere] md:max-w-[80%]',
                       entry.role === 'USER'
-                        ? 'rounded-br-md bg-primary text-primary-foreground'
+                        ? 'whitespace-pre-wrap rounded-br-md bg-primary text-primary-foreground'
                         : 'rounded-bl-md bg-secondary text-secondary-foreground',
                     )}
                   >
                     {entry.role === 'ASSISTANT' ? (
-                      <div className="flex flex-col gap-1.5">
-                        {formatMessage(entry.content).map((line, i) => (
-                          <p key={i} className={cn(line.startsWith('• ') && 'pl-2')}>
-                            {line}
-                          </p>
-                        ))}
-                      </div>
+                      <MarkdownContent content={entry.content} />
                     ) : (
                       entry.content
                     )}
