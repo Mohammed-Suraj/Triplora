@@ -501,10 +501,10 @@ export const hotelService = {
     return { upcoming, past, all };
   },
 
-  async getBookingById(id: string, userId: string) {
+  async getBookingById(id: string, userId: string, role?: string) {
     const booking = await hotelBookingRepository.findById(id);
     if (!booking) throw ApiError.notFound('Booking not found');
-    if (booking.userId !== userId) throw ApiError.forbidden('Not authorized to view this booking');
+    if (booking.userId !== userId && role !== 'ADMIN') throw ApiError.forbidden('Not authorized to view this booking');
     return booking;
   },
 
@@ -514,10 +514,10 @@ export const hotelService = {
     return booking;
   },
 
-  async cancelBooking(id: string, userId: string) {
+  async cancelBooking(id: string, userId: string, role?: string) {
     const booking = await hotelBookingRepository.findById(id);
     if (!booking) throw ApiError.notFound('Booking not found');
-    if (booking.userId !== userId) throw ApiError.forbidden('Not authorized to cancel this booking');
+    if (booking.userId !== userId && role !== 'ADMIN') throw ApiError.forbidden('Not authorized to cancel this booking');
     if (booking.status === 'CANCELLED') throw ApiError.badRequest('Booking is already cancelled');
     if (booking.status === 'COMPLETED') throw ApiError.badRequest('Cannot cancel a completed stay');
 

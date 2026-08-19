@@ -112,7 +112,7 @@ export const hotelController = {
 
   getBookingById: asyncHandler(async (req: Request, res: Response) => {
     const user = requireUser(req);
-    const booking = await hotelService.getBookingById(req.params.id, user.sub);
+    const booking = await hotelService.getBookingById(req.params.id, user.sub, user.role);
     res.status(200).json(new ApiResponse('Hotel booking retrieved successfully', booking));
   }),
 
@@ -123,7 +123,7 @@ export const hotelController = {
 
   cancelBooking: asyncHandler(async (req: Request, res: Response) => {
     const user = requireUser(req);
-    const booking = await hotelService.cancelBooking(req.params.id, user.sub);
+    const booking = await hotelService.cancelBooking(req.params.id, user.sub, user.role);
     res.status(200).json(new ApiResponse('Hotel booking cancelled successfully', booking));
   }),
 
