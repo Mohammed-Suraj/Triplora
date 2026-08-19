@@ -20,5 +20,9 @@ export function ProtectedRoute() {
     return <Navigate to="/login" replace state={{ from: location.pathname }} />
   }
 
+  if (user.role === 'ADMIN') {
+    return <Navigate to="/admin/dashboard" replace />
+  }
+
   return <Outlet />
 }

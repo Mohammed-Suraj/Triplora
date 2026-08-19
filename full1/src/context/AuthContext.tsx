@@ -1,10 +1,10 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
-import { ApiError, authApi, getToken, setToken, type SafeUser } from '@/lib/api'
+import { ApiError, authApi, getToken, setToken, type ApiEnvelope, type SafeUser } from '@/lib/api'
 
 interface AuthContextValue {
   user: SafeUser | null
   loading: boolean
-  login: (email: string, password: string) => Promise<void>
+  login: (email: string, password: string) => Promise<SafeUser>
   register: (name: string, email: string, password: string) => Promise<void>
   logout: () => Promise<void>
   updateProfile: (data: { name?: string; avatar?: string | null }) => Promise<SafeUser>
@@ -12,6 +12,11 @@ interface AuthContextValue {
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined)
+
+// Shared across mounts so the initial /auth/profile request fires at most
+// once per app load (e.g. React StrictMode double-mounts in dev) and is
+// never automatically retried when it fails (e.g. 429 rate limiting).
+let profileRequest: Promise<ApiEnvelope<SafeUser>> | null = null
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<SafeUser | null>(null)
@@ -23,8 +28,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(false)
       return
     }
-    authApi
-      .profile()
+    if (!profileRequest) profileRequest = authApi.profile()
+    profileRequest
       .then((res) => {
         if (active) setUser(res.data)
       })
@@ -55,18 +60,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const login = useCallback(async (email: string, password: string) => {
+    profileRequest = null
     const res = await authApi.login({ email, password })
     setToken(res.data.accessToken)
     setUser(res.data.user)
+    return res.data.user
   }, [])
 
   const register = useCallback(async (name: string, email: string, password: string) => {
+    profileRequest = null
     const res = await authApi.register({ name, email, password })
     setToken(res.data.accessToken)
     setUser(res.data.user)
   }, [])
 
   const logout = useCallback(async () => {
+    profileRequest = null
     try {
       await authApi.logout()
     } catch {

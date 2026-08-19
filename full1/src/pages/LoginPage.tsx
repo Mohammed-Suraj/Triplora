@@ -17,12 +17,13 @@ export function LoginPage() {
   const [loading, setLoading] = useState(false)
 
   if (user) {
-    const from = (location.state as { from?: string } | null)?.from ?? '/'
-    return <Navigate to={from} replace />
+    const from = (location.state as { from?: string } | null)?.from ?? '/planner'
+    return <Navigate to={user.role === 'ADMIN' ? '/admin/dashboard' : from} replace />
   }
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    if (loading) return
     setError(null)
     if (!email.trim()) {
       setError('Please enter your email address.')
@@ -34,9 +35,9 @@ export function LoginPage() {
     }
     setLoading(true)
     try {
-      await login(email, password)
-      const from = (location.state as { from?: string } | null)?.from ?? '/'
-      navigate(from, { replace: true })
+      const loggedIn = await login(email, password)
+      const from = (location.state as { from?: string } | null)?.from ?? '/planner'
+      navigate(loggedIn.role === 'ADMIN' ? '/admin/dashboard' : from, { replace: true })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed. Please try again.')
     } finally {
