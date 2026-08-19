@@ -1219,7 +1219,11 @@ export const adminApi = {
     return api.get<AdminEmailLog[]>('/admin/email-logs' + (qs ? '?' + qs : ''))
   },
   reviewReports: (params: { page?: number; limit?: number; status?: string } = {}) => {
-    const qs = new URLSearchParams(params as Record<string, string>).toString()
+    const query = new URLSearchParams()
+    if (params.page !== undefined) query.set('page', String(params.page))
+    if (params.limit !== undefined) query.set('limit', String(params.limit))
+    if (params.status && params.status !== 'ALL') query.set('status', params.status)
+    const qs = query.toString()
     return api.get<ReviewReportItem[]>('/admin/review-reports' + (qs ? '?' + qs : ''))
   },
   updateReportStatus: (id: string, status: string) =>

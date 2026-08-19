@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { CheckCircle2, Flag, Star, XCircle } from 'lucide-react'
@@ -26,9 +26,12 @@ export function ReviewReportsPage() {
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(false)
   const [updatingId, setUpdatingId] = useState<string | null>(null)
+  const inflightRef = useRef<{ page: number; append: boolean } | null>(null)
 
   const load = useCallback(
     async (targetPage: number, append = false) => {
+      if (inflightRef.current?.page === targetPage && inflightRef.current.append === append) return
+      inflightRef.current = { page: targetPage, append }
       if (targetPage === 1) setLoading(true)
       try {
         const res = await adminApi.reviewReports({
@@ -42,6 +45,7 @@ export function ReviewReportsPage() {
       } catch {
         toast.error('Could not load review reports.')
       } finally {
+        inflightRef.current = null
         setLoading(false)
       }
     },

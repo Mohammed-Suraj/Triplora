@@ -21,10 +21,19 @@ export const env = {
   port: Number(process.env.PORT ?? 5001),
   apiPrefix: process.env.API_PREFIX ?? '/api',
 
-  clientOrigins: (process.env.CLIENT_ORIGIN ?? 'http://localhost:1574')
-    .split(',')
-    .map((origin) => origin.trim())
-    .filter(Boolean),
+  clientOrigins: [
+    ...(process.env.CLIENT_ORIGIN ?? 'http://localhost:1574')
+      .split(',')
+      .map((origin) => origin.trim())
+      .filter(Boolean),
+    // Local dev frontends must always be able to reach the API (including the
+    // production API) so a locally-run Admin panel can read production data.
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'http://localhost:5176',
+    'http://127.0.0.1:5173',
+    'http://127.0.0.1:5174',
+  ],
 
   databaseUrl: required('DATABASE_URL'),
 

@@ -25,6 +25,7 @@ export function AdminLoginPage() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    if (loading) return
     setError(null)
     setLoading(true)
     try {
