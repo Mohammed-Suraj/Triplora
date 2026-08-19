@@ -31,11 +31,10 @@ export function AdminHotelBookingsPage() {
     hotelsApi
       .adminBookings({ page, limit: 20, status, search: search.trim() || undefined })
       .then((res) => {
-        const result = res.data as unknown as { items: HotelBookingResult[]; meta: { total: number; totalPages: number } }
-        const items = Array.isArray(res.data) ? (res.data as unknown as HotelBookingResult[]) : result.items
+        const items = Array.isArray(res.data) ? res.data : []
         setBookings(items)
-        setTotal(result.meta?.total ?? items.length)
-        setTotalPages(result.meta?.totalPages ?? 1)
+        setTotal(res.meta?.total ?? items.length)
+        setTotalPages(res.meta?.totalPages ?? 1)
       })
       .catch((err) => setError(err instanceof Error ? err.message : 'Failed to load bookings'))
       .finally(() => setLoading(false))

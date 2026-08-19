@@ -130,7 +130,19 @@ export const reviewRepository = {
   },
 
   updateReportStatus(id: string, status: ReportStatus) {
-    return prisma.reviewReport.update({ where: { id }, data: { status } });
+    return prisma.reviewReport.update({
+      where: { id },
+      data: { status },
+      include: {
+        user: { select: { id: true, name: true, email: true } },
+        review: {
+          include: {
+            user: { select: { id: true, name: true } },
+            destination: { select: { id: true, name: true, slug: true } },
+          },
+        },
+      },
+    });
   },
 
   findReportById(id: string) {

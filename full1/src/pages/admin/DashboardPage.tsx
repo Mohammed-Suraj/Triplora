@@ -9,6 +9,7 @@ import {
   MessageSquare,
   Clock,
   ArrowRight,
+  BedDouble,
 } from 'lucide-react'
 import { adminApi, type AdminStats } from '@/lib/api'
 import { AdminPageHeader, AdminEmptyState } from '@/components/admin/AdminPageHeader'
@@ -48,8 +49,8 @@ export function DashboardPage() {
       <AdminPageHeader title="Dashboard" subtitle="Overview of the Triplora platform" />
 
       {loading ? (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-          {[1, 2, 3, 4, 5].map((n) => (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+          {[1, 2, 3, 4, 5, 6].map((n) => (
             <div key={n} className="flex flex-col gap-3 rounded-2xl bg-card p-5 ring-1 ring-border">
               <Skeleton className="h-11 w-11 rounded-xl" />
               <Skeleton className="h-8 w-16" />
@@ -71,12 +72,13 @@ export function DashboardPage() {
           transition={{ duration: 0.3 }}
           className="flex flex-col gap-8"
         >
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
             <AdminStatCard icon={Users} label="Total Users" value={stats.users} accent="bg-blue-500/10 text-blue-600 dark:text-blue-400" index={0} />
             <AdminStatCard icon={MapPin} label="Destinations" value={stats.destinations} accent="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" index={1} />
             <AdminStatCard icon={CalendarDays} label="Bookings" value={stats.bookings} hint={`${stats.pendingBookings} pending`} accent="bg-amber-500/10 text-amber-600 dark:text-amber-400" index={2} />
-            <AdminStatCard icon={Star} label="Reviews" value={stats.reviews} accent="bg-purple-500/10 text-purple-600 dark:text-purple-400" index={3} />
-            <AdminStatCard icon={MessageSquare} label="Contact Messages" value={stats.contactMessages} hint={`${stats.newContactMessages} new`} accent="bg-rose-500/10 text-rose-600 dark:text-rose-400" index={4} />
+            <AdminStatCard icon={BedDouble} label="Hotel Bookings" value={stats.hotelBookings} hint={`${stats.pendingHotelBookings} pending`} accent="bg-teal-500/10 text-teal-600 dark:text-teal-400" index={3} />
+            <AdminStatCard icon={Star} label="Reviews" value={stats.reviews} accent="bg-purple-500/10 text-purple-600 dark:text-purple-400" index={4} />
+            <AdminStatCard icon={MessageSquare} label="Contact Messages" value={stats.contactMessages} hint={`${stats.newContactMessages} new`} accent="bg-rose-500/10 text-rose-600 dark:text-rose-400" index={5} />
           </div>
 
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">

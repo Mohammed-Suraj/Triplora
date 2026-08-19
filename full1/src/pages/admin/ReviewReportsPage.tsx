@@ -55,9 +55,9 @@ export function ReviewReportsPage() {
   const setStatus = async (id: string, status: 'RESOLVED' | 'DISMISSED') => {
     setUpdatingId(id)
     try {
-      const res = await adminApi.updateReportStatus(id, status)
-      setReports((prev) => prev.map((r) => (r.id === id ? res.data : r)))
+      await adminApi.updateReportStatus(id, status)
       toast.success(status === 'RESOLVED' ? 'Report marked as resolved.' : 'Report dismissed.')
+      await load(page)
     } catch {
       toast.error('Could not update the report.')
     } finally {

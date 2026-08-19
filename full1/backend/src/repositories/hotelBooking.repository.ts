@@ -12,6 +12,14 @@ const includeBooking = {
 } satisfies HotelBookingInclude;
 
 export const hotelBookingRepository = {
+  countAll() {
+    return prisma.hotelBooking.count();
+  },
+
+  countPending() {
+    return prisma.hotelBooking.count({ where: { status: 'PENDING' } });
+  },
+
   create(data: {
     bookingId: string;
     checkIn: Date;

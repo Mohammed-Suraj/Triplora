@@ -1,5 +1,6 @@
 import { adminRepository } from '../repositories/admin.repository';
 import { reviewRepository } from '../repositories/review.repository';
+import { hotelBookingRepository } from '../repositories/hotelBooking.repository';
 import { notificationService } from './notification.service';
 import { uploadService } from './upload.service';
 import { ApiError } from '../utils/ApiError';
@@ -33,6 +34,10 @@ export const adminService = {
   async getStats() {
     const [users, destinations, bookings, pendingBookings, reviews, newContactMessages, contactMessages] =
       await adminRepository.getStats();
+    const [hotelBookings, pendingHotelBookings] = await Promise.all([
+      hotelBookingRepository.countAll(),
+      hotelBookingRepository.countPending(),
+    ]);
 
     const recentBookings = await adminRepository.listBookings(0, 6);
     const recentUsers = await adminRepository.listUsers(0, 5);
@@ -43,6 +48,8 @@ export const adminService = {
       destinations,
       bookings,
       pendingBookings,
+      hotelBookings,
+      pendingHotelBookings,
       reviews,
       newContactMessages,
       contactMessages,

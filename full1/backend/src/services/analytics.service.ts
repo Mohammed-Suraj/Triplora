@@ -41,20 +41,23 @@ async function countBetween(model: 'booking' | 'user' | 'review' | 'searchLog' |
 
 export const analyticsService = {
   async overview() {
-    const [revenue, paidBookings, bookings, users, aiUsage, searches, reviews, avgRating] = await Promise.all([
-      prisma.booking.aggregate({ where: { paymentStatus: 'PAID' }, _sum: { amount: true } }),
-      prisma.booking.count({ where: { paymentStatus: 'PAID' } }),
-      prisma.booking.count(),
-      prisma.user.count(),
-      prisma.aiUsageLog.count(),
-      prisma.searchLog.count(),
-      prisma.review.count(),
-      prisma.review.aggregate({ _avg: { rating: true } }),
-    ]);
+    const [revenue, paidBookings, bookings, hotelBookings, users, aiUsage, searches, reviews, avgRating] =
+      await Promise.all([
+        prisma.booking.aggregate({ where: { paymentStatus: 'PAID' }, _sum: { amount: true } }),
+        prisma.booking.count({ where: { paymentStatus: 'PAID' } }),
+        prisma.booking.count(),
+        prisma.hotelBooking.count(),
+        prisma.user.count(),
+        prisma.aiUsageLog.count(),
+        prisma.searchLog.count(),
+        prisma.review.count(),
+        prisma.review.aggregate({ _avg: { rating: true } }),
+      ]);
     return {
       revenue: revenue._sum.amount ?? 0,
       paidBookings,
       bookings,
+      hotelBookings,
       users,
       aiUsage,
       searches,
@@ -91,7 +94,7 @@ export const analyticsService = {
         rating: true,
         reviewsCount: true,
         category: { select: { name: true } },
-        _count: { select: { bookings: true } },
+        _count: { select: { bookings: { where: { paymentStatus: 'PAID' } } } },
         bookings: { where: { paymentStatus: 'PAID' }, select: { amount: true } },
       },
       orderBy: { popularityScore: 'desc' },
@@ -127,8 +130,6 @@ export const analyticsService = {
         category: { select: { name: true } },
         _count: { select: { bookings: { where: { createdAt: { gte: since } } }, reviews: { where: { createdAt: { gte: since } } } } },
       },
-      orderBy: { popularityScore: 'desc' },
-      take,
     });
 
     return rows
@@ -171,6 +172,7 @@ export const analyticsService = {
       }),
       prisma.aiUsageLog.groupBy({
         by: ['type'],
+        where: { createdAt: { gte: since } },
         _count: { _all: true },
       }),
     ]);
@@ -210,9 +212,10 @@ export const analyticsService = {
         reviewsCount: true,
         popularityScore: true,
         category: { select: { name: true } },
-        _count: { select: { bookings: true } },
+        _count: { select: { bookings: { where: { paymentStatus: 'PAID' } } } },
         bookings: { where: { paymentStatus: 'PAID' }, select: { amount: true } },
       },
+      orderBy: { popularityScore: 'desc' },
       take: 200,
     });
 

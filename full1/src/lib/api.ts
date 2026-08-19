@@ -1012,6 +1012,8 @@ export interface AdminStats {
   destinations: number
   bookings: number
   pendingBookings: number
+  hotelBookings: number
+  pendingHotelBookings: number
   reviews: number
   newContactMessages: number
   contactMessages: number
@@ -1095,6 +1097,7 @@ export interface AnalyticsOverview {
   revenue: number
   paidBookings: number
   bookings: number
+  hotelBookings: number
   users: number
   aiUsage: number
   searches: number
